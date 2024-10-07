@@ -252,16 +252,6 @@ double interpolate_data(const struct data *data, double x, double y)
   int i = floor(real_i);
   int j = floor(real_j);
 
-  /*
-  printf("REAL\n");
-  printf("x -> %f <= %f <= %f \n", GET_X_COORD(data, i), x, GET_X_COORD(data, i+1));
-  printf("y -> %f <= %f <= %f \n", GET_Y_COORD(data, j), y, GET_Y_COORD(data, j+1));
-  printf("INDECES\n");
-  printf("h -> dx: %f, real_i -> %f, i -> %d\n", data->dx, real_i, i);
-  printf("h -> dy: %f, real_j -> %f, j -> %d\n", data->dy, real_j, j);
-  printf("\n");
-  */
-
   if(i < 0) i = 0;
   else if(i > data->nx - 1) i = data->nx - 1;
   if(j < 0) j = 0;
@@ -314,6 +304,9 @@ int main(int argc, char **argv)
   struct data h;
   if(read_data(&h, param.input_h_filename)) return 1;
 
+  printf("h->dx = %f\n", h.dx);
+  printf("h->dy = %f\n", h.dy);
+
   // infer size of domain from input elevation data
   double hx = h.nx * h.dx;
   double hy = h.ny * h.dy;
@@ -340,10 +333,6 @@ int main(int argc, char **argv)
       double x = i * param.dx;
       double y = j * param.dy;
       double val = interpolate_data(&h, x, y);
-
-      if (val == ERROR_VALUE){
-        return -1;
-      }
       
       SET(&h_interp, i, j, val);
     }
@@ -362,7 +351,7 @@ int main(int argc, char **argv)
 
     // output solution
     if(param.sampling_rate && !(n % param.sampling_rate)) {
-      write_data_vtk(&eta, "water elevation", param.output_eta_filename, n);
+      //write_data_vtk(&eta, "water elevation", param.output_eta_filename, n);
       //write_data_vtk(&u, "x velocity", param.output_u_filename, n);
       //write_data_vtk(&v, "y velocity", param.output_v_filename, n);
     }
@@ -426,8 +415,8 @@ int main(int argc, char **argv)
 
   }
 
-  write_manifest_vtk("water elevation", param.output_eta_filename,
-                     param.dt, nt, param.sampling_rate);
+  //write_manifest_vtk("water elevation", param.output_eta_filename,
+  //                   param.dt, nt, param.sampling_rate);
   //write_manifest_vtk("x velocity", param.output_u_filename,
   //                   param.dt, nt, param.sampling_rate);
   //write_manifest_vtk("y velocity", param.output_v_filename,
