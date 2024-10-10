@@ -38,6 +38,11 @@ struct data {
 #define ERROR_VALUE -1
 #define MAX_ITERATION 10
 
+struct time_records {
+  int counter;
+  double times[MAX_ITERATION];
+};
+
 int read_parameters(struct parameters *param, const char *filename)
 {
   FILE *fp = fopen(filename, "r");
@@ -243,6 +248,27 @@ void free_data(struct data *data)
   free(data->values);
 }
 
+void print_to_file(const struct time_records *times, const char *filename){
+  FILE *file = fopen(filename, "w");
+
+  if (file == NULL){
+      printf("Error opening file!\n");
+      exit(1);
+  }
+
+  double total_time = 0.0;
+
+  for (int i = 0; i < times->counter; i++){
+    fprintf(file, "%f\n", times->times[i]);
+    total_time += times->times[i];
+  }
+
+  double mean_time = total_time/(double)times->counter;
+
+  fprintf(file, "Total time: %f\n", total_time);
+  fprintf(file, "Mean time for execution: %f\n", mean_time);
+}
+
 double interpolate_data(const struct data *data, double x, double y)
 {
   // TODO: this returns the nearest neighbor, should implement actual
@@ -319,59 +345,61 @@ int main(int argc, char **argv)
   if(read_parameters(&param, argv[1])) return 1;
   print_parameters(&param);
 
-  int k = 0;
-  while (k < MAX_ITERATION){
-    param.dt += 0.01;
+  struct data h;
+  if(read_data(&h, param.input_h_filename)) return 1;
 
-    struct data h;
-    if(read_data(&h, param.input_h_filename)) return 1;
+  printf("h->dx = %f\n", h.dx);
+  printf("h->dy = %f\n", h.dy);
 
-    printf("h->dx = %f\n", h.dx);
-    printf("h->dy = %f\n", h.dy);
+  // infer size of domain from input elevation data
+  double hx = h.nx * h.dx;
+  double hy = h.ny * h.dy;
+  int nx = floor(hx / param.dx);
+  int ny = floor(hy / param.dy);
+  if(nx <= 0) nx = 1;
+  if(ny <= 0) ny = 1;
+  int nt = floor(param.max_t / param.dt);
 
-    // infer size of domain from input elevation data
-    double hx = h.nx * h.dx;
-    double hy = h.ny * h.dy;
-    int nx = floor(hx / param.dx);
-    int ny = floor(hy / param.dy);
-    if(nx <= 0) nx = 1;
-    if(ny <= 0) ny = 1;
-    int nt = floor(param.max_t / param.dt);
+  printf(" - grid size: %g m x %g m (%d x %d = %d grid points)\n",
+         hx, hy, nx, ny, nx * ny);
+  printf(" - number of time steps: %d\n", nt);
 
-    printf(" - grid size: %g m x %g m (%d x %d = %d grid points)\n",
-          hx, hy, nx, ny, nx * ny);
-    printf(" - number of time steps: %d\n", nt);
+  struct data eta, u, v;
+  init_data(&eta, nx, ny, param.dx, param.dx, 0.);
+  init_data(&u, nx + 1, ny, param.dx, param.dy, 0.);
+  init_data(&v, nx, ny + 1, param.dx, param.dy, 0.);
 
-    struct data eta, u, v;
-    init_data(&eta, nx, ny, param.dx, param.dx, 0.);
-    init_data(&u, nx + 1, ny, param.dx, param.dy, 0.);
-    init_data(&v, nx, ny + 1, param.dx, param.dy, 0.);
+  // interpolate bathymetry
+  struct data h_interp_u;
+  struct data h_interp_v;
 
-    // interpolate bathymetry
-    struct data h_interp_u;
-    struct data h_interp_v;
-
-    init_data(&h_interp_u, u.nx, u.ny, param.dx, param.dy, 0.);
-    for(int j = 0; j < u.ny ; j++) {
-      for(int i = 0; i < u.nx + 1; i++) {
-        double x = i * param.dx;
-        double y = ((double)j + 0.5) * param.dy;
-        double val = interpolate_data(&h, x, y);
-        
-        SET(&h_interp_u, i, j, val);
-      }
+  init_data(&h_interp_u, u.nx, u.ny, param.dx, param.dy, 0.);
+  for(int j = 0; j < u.ny ; j++) {
+    for(int i = 0; i < u.nx + 1; i++) {
+      double x = i * param.dx;
+      double y = ((double)j + 0.5) * param.dy;
+      double val = interpolate_data(&h, x, y);
+      
+      SET(&h_interp_u, i, j, val);
     }
+  }
 
-    init_data(&h_interp_v, v.nx, v.ny, param.dx, param.dy, 0.);
-    for(int j = 0; j < v.ny ; j++) {
-      for(int i = 0; i < v.nx + 1; i++) {
-        double x = ((double)i + 0.5) * param.dx;
-        double y = j * param.dy;
-        double val = interpolate_data(&h, x, y);
-        
-        SET(&h_interp_v, i, j, val);
-      }
+  init_data(&h_interp_v, v.nx, v.ny, param.dx, param.dy, 0.);
+  for(int j = 0; j < v.ny ; j++) {
+    for(int i = 0; i < v.nx + 1; i++) {
+      double x = ((double)i + 0.5) * param.dx;
+      double y = j * param.dy;
+      double val = interpolate_data(&h, x, y);
+      
+      SET(&h_interp_v, i, j, val);
     }
+  }
+
+  struct time_records times;
+  times.counter = 0;
+
+  for (int k = 0; k < MAX_ITERATION; k++){
+    times.counter += 1;
 
     double start = GET_TIME();
 
@@ -428,12 +456,17 @@ int main(int argc, char **argv)
           double h_x_v_i_j1 = GET(&h_interp_v, i, j+1);
           double h_x_v_i_j = GET(&h_interp_v, i, j);
 
+          if (h_x_u_i1_j != 20.0 || h_x_u_i_j != 20.0 || h_x_v_i_j1 != 20.0 || h_x_v_i_j != 20){
+            printf("i: %d, j: %d, value: %f | %f | %f | %f\n", i, j, h_x_u_i1_j, h_x_u_i_j, h_x_v_i_j1, h_x_v_i_j);
+            return 1;
+          }
+
           double eta_ij = GET(&eta, i, j) 
                   - param.dt / param.dx * (h_x_u_i1_j * GET(&u, i+1, j) - h_x_u_i_j * GET(&u, i, j))
                   - param.dt / param.dy * (h_x_v_i_j1 * GET(&v, i, j+1) - h_x_v_i_j * GET(&v, i, j));
           
           if (eta_ij > 10.0 || eta_ij < -10.0 || isnan(eta_ij)){
-            printf("i: %d, j: %d, value: %f, dt: %f", i, j, eta_ij, param.dt);
+            printf("i: %d, j: %d, value: %f", i, j, eta_ij);
             return 1;
           }
           
@@ -471,13 +504,17 @@ int main(int argc, char **argv)
     printf("\nDone: %g seconds (%g MUpdates/s)\n", time,
           1e-6 * (double)eta.nx * (double)eta.ny * (double)nt / time);
 
-    free_data(&h_interp_u);
-    free_data(&h_interp_v);
-    free_data(&eta);
-    free_data(&u);
-    free_data(&v);
-
-    k++;
+    times.times[k] = time;
   }
+  
+  print_to_file(&times, "times.txt");
+
+  free_data(&h_interp_u);
+  free_data(&h_interp_v);
+  free_data(&eta);
+  free_data(&u);
+  free_data(&v);
+
+
   return 0;
 }
