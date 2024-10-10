@@ -290,23 +290,6 @@ double interpolate_data(const struct data *data, double x, double y)
   return val;
 }
 
-void save_coordinate(struct data *data, const char *filename){
-    FILE* f = fopen(filename, "w");
-
-    fprintf(f, "nx: %d\n", data->nx);
-    fprintf(f, "ny: %d\n", data->ny);
-    fprintf(f, "dx: %f\n", data->dx);
-    fprintf(f, "dx: %f\n", data->dy);
-
-    for(int j = 0; j < data->ny; j++) {
-        for(int i = 0; i < data->nx; i++) {
-            fprintf(f, "%f\n", GET(data, i, j));
-        }
-    }
-
-    fclose(f);
-}
-
 int main(int argc, char **argv)
 {
   if(argc != 2) {
@@ -320,9 +303,6 @@ int main(int argc, char **argv)
 
   struct data h;
   if(read_data(&h, param.input_h_filename)) return 1;
-
-  printf("h->dx = %f\n", h.dx);
-  printf("h->dy = %f\n", h.dy);
 
   // infer size of domain from input elevation data
   double hx = h.nx * h.dx;
@@ -367,9 +347,6 @@ int main(int argc, char **argv)
       SET(&h_interp_v, i, j, val);
     }
   }
-
-  save_coordinate(&h_interp_u, "h_interp_u.csv");
-  save_coordinate(&h_interp_v, "h_interp_v.csv");
 
   double start = GET_TIME();
 
@@ -425,20 +402,10 @@ int main(int argc, char **argv)
 
         double h_x_v_i_j1 = GET(&h_interp_v, i, j+1);
         double h_x_v_i_j = GET(&h_interp_v, i, j);
-
-        if (h_x_u_i1_j != 20.0 || h_x_u_i_j != 20.0 || h_x_v_i_j1 != 20.0 || h_x_v_i_j != 20){
-          printf("i: %d, j: %d, value: %f | %f | %f | %f\n", i, j, h_x_u_i1_j, h_x_u_i_j, h_x_v_i_j1, h_x_v_i_j);
-          return 1;
-        }
-
+        
         double eta_ij = GET(&eta, i, j) 
                 - param.dt / param.dx * (h_x_u_i1_j * GET(&u, i+1, j) - h_x_u_i_j * GET(&u, i, j))
                 - param.dt / param.dy * (h_x_v_i_j1 * GET(&v, i, j+1) - h_x_v_i_j * GET(&v, i, j));
-        
-        if (eta_ij > 10.0 || eta_ij < -10.0 || isnan(eta_ij)){
-          printf("i: %d, j: %d, value: %f", i, j, eta_ij);
-          return 1;
-        }
         
         SET(&eta, i, j, eta_ij);
       }
