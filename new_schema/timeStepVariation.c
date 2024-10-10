@@ -36,6 +36,7 @@ struct data {
 #define GET_Y_COORD(data, i) ((data)->dy * (i))
 
 #define ERROR_VALUE -1
+#define MAX_ITERATION 10
 
 int read_parameters(struct parameters *param, const char *filename)
 {
@@ -290,6 +291,23 @@ double interpolate_data(const struct data *data, double x, double y)
   return val;
 }
 
+void save_coordinate(struct data *data, const char *filename){
+    FILE* f = fopen(filename, "w");
+
+    fprintf(f, "nx: %d\n", data->nx);
+    fprintf(f, "ny: %d\n", data->ny);
+    fprintf(f, "dx: %f\n", data->dx);
+    fprintf(f, "dx: %f\n", data->dy);
+
+    for(int j = 0; j < data->ny; j++) {
+        for(int i = 0; i < data->nx; i++) {
+            fprintf(f, "%f\n", GET(data, i, j));
+        }
+    }
+
+    fclose(f);
+}
+
 int main(int argc, char **argv)
 {
   if(argc != 2) {
@@ -301,151 +319,165 @@ int main(int argc, char **argv)
   if(read_parameters(&param, argv[1])) return 1;
   print_parameters(&param);
 
-  struct data h;
-  if(read_data(&h, param.input_h_filename)) return 1;
+  int k = 0;
+  while (k < MAX_ITERATION){
+    param.dt += 0.05;
 
-  // infer size of domain from input elevation data
-  double hx = h.nx * h.dx;
-  double hy = h.ny * h.dy;
-  int nx = floor(hx / param.dx);
-  int ny = floor(hy / param.dy);
-  if(nx <= 0) nx = 1;
-  if(ny <= 0) ny = 1;
-  int nt = floor(param.max_t / param.dt);
+    struct data h;
+    if(read_data(&h, param.input_h_filename)) return 1;
 
-  printf(" - grid size: %g m x %g m (%d x %d = %d grid points)\n",
-         hx, hy, nx, ny, nx * ny);
-  printf(" - number of time steps: %d\n", nt);
+    printf("h->dx = %f\n", h.dx);
+    printf("h->dy = %f\n", h.dy);
 
-  struct data eta, u, v;
-  init_data(&eta, nx, ny, param.dx, param.dx, 0.);
-  init_data(&u, nx + 1, ny, param.dx, param.dy, 0.);
-  init_data(&v, nx, ny + 1, param.dx, param.dy, 0.);
+    // infer size of domain from input elevation data
+    double hx = h.nx * h.dx;
+    double hy = h.ny * h.dy;
+    int nx = floor(hx / param.dx);
+    int ny = floor(hy / param.dy);
+    if(nx <= 0) nx = 1;
+    if(ny <= 0) ny = 1;
+    int nt = floor(param.max_t / param.dt);
 
-  // interpolate bathymetry
-  struct data h_interp_u;
-  struct data h_interp_v;
+    printf(" - grid size: %g m x %g m (%d x %d = %d grid points)\n",
+          hx, hy, nx, ny, nx * ny);
+    printf(" - number of time steps: %d\n", nt);
 
-  init_data(&h_interp_u, u.nx, u.ny, param.dx, param.dy, 0.);
-  for(int j = 0; j < u.ny ; j++) {
-    for(int i = 0; i < u.nx + 1; i++) {
-      double x = i * param.dx;
-      double y = ((double)j + 0.5) * param.dy;
-      double val = interpolate_data(&h, x, y);
-      
-      SET(&h_interp_u, i, j, val);
-    }
-  }
+    struct data eta, u, v;
+    init_data(&eta, nx, ny, param.dx, param.dx, 0.);
+    init_data(&u, nx + 1, ny, param.dx, param.dy, 0.);
+    init_data(&v, nx, ny + 1, param.dx, param.dy, 0.);
 
-  init_data(&h_interp_v, v.nx, v.ny, param.dx, param.dy, 0.);
-  for(int j = 0; j < v.ny ; j++) {
-    for(int i = 0; i < v.nx + 1; i++) {
-      double x = ((double)i + 0.5) * param.dx;
-      double y = j * param.dy;
-      double val = interpolate_data(&h, x, y);
-      
-      SET(&h_interp_v, i, j, val);
-    }
-  }
+    // interpolate bathymetry
+    struct data h_interp_u;
+    struct data h_interp_v;
 
-  double start = GET_TIME();
-
-  for(int n = 0; n < nt; n++) {
-
-    if(n && (n % (nt / 10)) == 0) {
-      double time_sofar = GET_TIME() - start;
-      double eta = (nt - n) * time_sofar / n;
-      printf("Computing step %d/%d (ETA: %g seconds)     \r", n, nt, eta);
-      fflush(stdout);
+    init_data(&h_interp_u, u.nx, u.ny, param.dx, param.dy, 0.);
+    for(int j = 0; j < u.ny ; j++) {
+      for(int i = 0; i < u.nx + 1; i++) {
+        double x = i * param.dx;
+        double y = ((double)j + 0.5) * param.dy;
+        double val = interpolate_data(&h, x, y);
+        
+        SET(&h_interp_u, i, j, val);
+      }
     }
 
-    // output solution
-    if(param.sampling_rate && !(n % param.sampling_rate)) {
-      write_data_vtk(&eta, "water elevation", param.output_eta_filename, n);
-      //write_data_vtk(&u, "x velocity", param.output_u_filename, n);
-      //write_data_vtk(&v, "y velocity", param.output_v_filename, n);
+    init_data(&h_interp_v, v.nx, v.ny, param.dx, param.dy, 0.);
+    for(int j = 0; j < v.ny ; j++) {
+      for(int i = 0; i < v.nx + 1; i++) {
+        double x = ((double)i + 0.5) * param.dx;
+        double y = j * param.dy;
+        double val = interpolate_data(&h, x, y);
+        
+        SET(&h_interp_v, i, j, val);
+      }
     }
 
-    // impose boundary conditions
-    double t = n * param.dt;
-    if(param.source_type == 1) {
-      // sinusoidal velocity on top boundary
-      double A = 5;
-      double f = 1. / 20.;
-      for(int i = 0; i < nx; i++) {
-        for(int j = 0; j < ny; j++) {
-          SET(&u, 0, j, 0.);
-          SET(&u, nx, j, 0.);
-          SET(&v, i, 0, 0.);
-          SET(&v, i, ny, A * sin(2 * M_PI * f * t));
+    double start = GET_TIME();
+
+    for(int n = 0; n < nt; n++) {
+
+      if(n && (n % (nt / 10)) == 0) {
+        double time_sofar = GET_TIME() - start;
+        double eta = (nt - n) * time_sofar / n;
+        printf("Computing step %d/%d (ETA: %g seconds)     \r", n, nt, eta);
+        fflush(stdout);
+      }
+
+      // output solution
+      if(param.sampling_rate && !(n % param.sampling_rate)) {
+        write_data_vtk(&eta, "water elevation", param.output_eta_filename, n);
+        //write_data_vtk(&u, "x velocity", param.output_u_filename, n);
+        //write_data_vtk(&v, "y velocity", param.output_v_filename, n);
+      }
+
+      // impose boundary conditions
+      double t = n * param.dt;
+      if(param.source_type == 1) {
+        // sinusoidal velocity on top boundary
+        double A = 5;
+        double f = 1. / 20.;
+        for(int i = 0; i < nx; i++) {
+          for(int j = 0; j < ny; j++) {
+            SET(&u, 0, j, 0.);
+            SET(&u, nx, j, 0.);
+            SET(&v, i, 0, 0.);
+            SET(&v, i, ny, A * sin(2 * M_PI * f * t));
+          }
         }
       }
-    }
-    else if(param.source_type == 2) {
-      // sinusoidal elevation in the middle of the domain
-      double A = 5;
-      double f = 1. / 20.;
-      SET(&eta, nx / 2, ny / 2, A * sin(2 * M_PI * f * t));
-    }
-    else {
-      // TODO: add other sources
-      printf("Error: Unknown source type %d\n", param.source_type);
-      exit(0);
-    }
-
-    // update eta
-    for(int i = 0; i < nx; i++) {
-      for(int j = 0; j < ny ; j++) {
-        // TODO: this does not evaluate h at the correct locations
-        double h_x_u_i1_j = GET(&h_interp_u, i+1, j);
-        double h_x_u_i_j = GET(&h_interp_u, i, j);
-
-        double h_x_v_i_j1 = GET(&h_interp_v, i, j+1);
-        double h_x_v_i_j = GET(&h_interp_v, i, j);
-        
-        double eta_ij = GET(&eta, i, j) 
-                - param.dt / param.dx * (h_x_u_i1_j * GET(&u, i+1, j) - h_x_u_i_j * GET(&u, i, j))
-                - param.dt / param.dy * (h_x_v_i_j1 * GET(&v, i, j+1) - h_x_v_i_j * GET(&v, i, j));
-        
-        SET(&eta, i, j, eta_ij);
+      else if(param.source_type == 2) {
+        // sinusoidal elevation in the middle of the domain
+        double A = 5;
+        double f = 1. / 20.;
+        SET(&eta, nx / 2, ny / 2, A * sin(2 * M_PI * f * t));
       }
-    }
-
-    // update u and v
-    for(int i = 0; i < nx; i++) {
-      for(int j = 0; j < ny; j++) {
-        double c1 = param.dt * param.g;
-        double c2 = param.dt * param.gamma;
-        double eta_ij = GET(&eta, i, j);
-        double eta_imj = GET(&eta, (i == 0) ? 0 : i - 1, j);
-        double eta_ijm = GET(&eta, i, (j == 0) ? 0 : j - 1);
-        double u_ij = (1. - c2) * GET(&u, i, j)
-          - c1 / param.dx * (eta_ij - eta_imj);
-        double v_ij = (1. - c2) * GET(&v, i, j)
-          - c1 / param.dy * (eta_ij - eta_ijm);
-        SET(&u, i, j, u_ij);
-        SET(&v, i, j, v_ij);
+      else {
+        // TODO: add other sources
+        printf("Error: Unknown source type %d\n", param.source_type);
+        exit(0);
       }
+
+      // update eta
+      for(int i = 0; i < nx; i++) {
+        for(int j = 0; j < ny ; j++) {
+          // TODO: this does not evaluate h at the correct locations
+          double h_x_u_i1_j = GET(&h_interp_u, i+1, j);
+          double h_x_u_i_j = GET(&h_interp_u, i, j);
+
+          double h_x_v_i_j1 = GET(&h_interp_v, i, j+1);
+          double h_x_v_i_j = GET(&h_interp_v, i, j);
+
+          double eta_ij = GET(&eta, i, j) 
+                  - param.dt / param.dx * (h_x_u_i1_j * GET(&u, i+1, j) - h_x_u_i_j * GET(&u, i, j))
+                  - param.dt / param.dy * (h_x_v_i_j1 * GET(&v, i, j+1) - h_x_v_i_j * GET(&v, i, j));
+          
+          if (eta_ij > 10.0 || eta_ij < -10.0 || isnan(eta_ij)){
+            printf("i: %d, j: %d, value: %f, dt: %f", i, j, eta_ij, param.dt);
+            return 1;
+          }
+          
+          SET(&eta, i, j, eta_ij);
+        }
+      }
+
+      // update u and v
+      for(int i = 0; i < nx; i++) {
+        for(int j = 0; j < ny; j++) {
+          double c1 = param.dt * param.g;
+          double c2 = param.dt * param.gamma;
+          double eta_ij = GET(&eta, i, j);
+          double eta_imj = GET(&eta, (i == 0) ? 0 : i - 1, j);
+          double eta_ijm = GET(&eta, i, (j == 0) ? 0 : j - 1);
+          double u_ij = (1. - c2) * GET(&u, i, j)
+            - c1 / param.dx * (eta_ij - eta_imj);
+          double v_ij = (1. - c2) * GET(&v, i, j)
+            - c1 / param.dy * (eta_ij - eta_ijm);
+          SET(&u, i, j, u_ij);
+          SET(&v, i, j, v_ij);
+        }
+      }
+
     }
 
+    write_manifest_vtk("water elevation", param.output_eta_filename,
+                      param.dt, nt, param.sampling_rate);
+    //write_manifest_vtk("x velocity", param.output_u_filename,
+    //                   param.dt, nt, param.sampling_rate);
+    //write_manifest_vtk("y velocity", param.output_v_filename,
+    //                   param.dt, nt, param.sampling_rate);
+
+    double time = GET_TIME() - start;
+    printf("\nDone: %g seconds (%g MUpdates/s)\n", time,
+          1e-6 * (double)eta.nx * (double)eta.ny * (double)nt / time);
+
+    free_data(&h_interp_u);
+    free_data(&h_interp_v);
+    free_data(&eta);
+    free_data(&u);
+    free_data(&v);
+
+    k++;
   }
-
-  write_manifest_vtk("water elevation", param.output_eta_filename,
-                     param.dt, nt, param.sampling_rate);
-  //write_manifest_vtk("x velocity", param.output_u_filename,
-  //                   param.dt, nt, param.sampling_rate);
-  //write_manifest_vtk("y velocity", param.output_v_filename,
-  //                   param.dt, nt, param.sampling_rate);
-
-  double time = GET_TIME() - start;
-  printf("\nDone: %g seconds (%g MUpdates/s)\n", time,
-         1e-6 * (double)eta.nx * (double)eta.ny * (double)nt / time);
-
-  free_data(&h_interp_u);
-  free_data(&h_interp_v);
-  free_data(&eta);
-  free_data(&u);
-  free_data(&v);
-
   return 0;
 }
