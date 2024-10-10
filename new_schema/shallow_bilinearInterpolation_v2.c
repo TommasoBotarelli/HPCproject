@@ -29,8 +29,8 @@ struct data {
   double *values;
 };
 
-#define GET(data, i, j) ((data)->values[(data)->nx * (j) + (i)])        //2op
-#define SET(data, i, j, val) ((data)->values[(data)->nx * (j) + (i)] = (val))   //2op
+#define GET(data, i, j) ((data)->values[(data)->nx * (j) + (i)])
+#define SET(data, i, j, val) ((data)->values[(data)->nx * (j) + (i)] = (val))
 
 #define GET_X_COORD(data, i) ((data)->dx * (i))
 #define GET_Y_COORD(data, i) ((data)->dy * (i))
@@ -252,7 +252,6 @@ double interpolate_data(const struct data *data, double x, double y)
   int i = floor(real_i);
   int j = floor(real_j);
 
-  
   if(i < 0) i = 0;
   else if(i > data->nx - 1) i = data->nx - 1;
   if(j < 0) j = 0;
@@ -305,12 +304,14 @@ int main(int argc, char **argv)
   struct data h;
   if(read_data(&h, param.input_h_filename)) return 1;
 
+  printf("h->dx = %f\n", h.dx);
+  printf("h->dy = %f\n", h.dy);
+
   // infer size of domain from input elevation data
   double hx = h.nx * h.dx;
   double hy = h.ny * h.dy;
   int nx = floor(hx / param.dx);
   int ny = floor(hy / param.dy);
-  printf("nx: %i, ny: %i\n", nx, ny);
   if(nx <= 0) nx = 1;
   if(ny <= 0) ny = 1;
   int nt = floor(param.max_t / param.dt);
@@ -325,22 +326,30 @@ int main(int argc, char **argv)
   init_data(&v, nx, ny + 1, param.dx, param.dy, 0.);
 
   // interpolate bathymetry
-  struct data h_interp;
-  init_data(&h_interp, nx, ny, param.dx, param.dy, 0.);
-  for(int j = 0; j < ny; j++) {     
-    for(int i = 0; i < nx; i++) {
-      double x = i * param.dx;
-      double y = j * param.dy;
-      double val = interpolate_data(&h, x, y);
+  struct data h_interp_u;
+  struct data h_interp_v;
 
-      if (val == ERROR_VALUE){
-        return -1;
-      }
+  init_data(&h_interp_u, u.nx, u.ny, param.dx, param.dy, 0.);
+  for(int j = 0; j < u.ny ; j++) {
+    for(int i = 0; i < u.nx + 1; i++) {
+      double x = i * param.dx;
+      double y = ((double)j + 0.5) * param.dy;
+      double val = interpolate_data(&h, x, y);
       
-      SET(&h_interp, i, j, val);
+      SET(&h_interp_u, i, j, val);
     }
   }
 
+  init_data(&h_interp_v, v.nx, v.ny, param.dx, param.dy, 0.);
+  for(int j = 0; j < v.ny ; j++) {
+    for(int i = 0; i < v.nx + 1; i++) {
+      double x = ((double)i + 0.5) * param.dx;
+      double y = j * param.dy;
+      double val = interpolate_data(&h, x, y);
+      
+      SET(&h_interp_v, i, j, val);
+    }
+  }
   double start = GET_TIME();
 
   for(int n = 0; n < nt; n++) {
@@ -360,19 +369,19 @@ int main(int argc, char **argv)
     }
 
     // impose boundary conditions
-    double t = n * param.dt;                               //1 op
+    double t = n * param.dt;
     if(param.source_type == 1) {
       // sinusoidal velocity on top boundary
       double A = 5;
-      double f = 1. / 20.;                                 //1
+      double f = 1. / 20.;
       for(int i = 0; i < nx; i++) {
         for(int j = 0; j < ny; j++) {
-          SET(&u, 0, j, 0.);                                //2xset = 8
+          SET(&u, 0, j, 0.);
           SET(&u, nx, j, 0.);
           SET(&v, i, 0, 0.);
-          SET(&v, i, ny, A * sin(2 * M_PI * f * t));                //4op +sin
+          SET(&v, i, ny, A * sin(2 * M_PI * f * t));
         }
-      }                                                           //tot = 20+sin
+      }
     }
     else if(param.source_type == 2) {
       // sinusoidal elevation in the middle of the domain
@@ -390,11 +399,16 @@ int main(int argc, char **argv)
     for(int i = 0; i < nx; i++) {
       for(int j = 0; j < ny ; j++) {
         // TODO: this does not evaluate h at the correct locations
-        double h_ij = GET(&h_interp, i, j);
-        double c1 = param.dt * h_ij;
-        double eta_ij = GET(&eta, i, j)
-          - c1 / param.dx * (GET(&u, i + 1, j) - GET(&u, i, j))
-          - c1 / param.dy * (GET(&v, i, j + 1) - GET(&v, i, j));
+        double h_x_u_i1_j = GET(&h_interp_u, i+1, j);
+        double h_x_u_i_j = GET(&h_interp_u, i, j);
+
+        double h_x_v_i_j1 = GET(&h_interp_v, i, j+1);
+        double h_x_v_i_j = GET(&h_interp_v, i, j);
+
+        double eta_ij = GET(&eta, i, j) 
+                - param.dt / param.dx * (h_x_u_i1_j * GET(&u, i+1, j) - h_x_u_i_j * GET(&u, i, j))
+                - param.dt / param.dy * (h_x_v_i_j1 * GET(&v, i, j+1) - h_x_v_i_j * GET(&v, i, j));
+                            
         SET(&eta, i, j, eta_ij);
       }
     }
