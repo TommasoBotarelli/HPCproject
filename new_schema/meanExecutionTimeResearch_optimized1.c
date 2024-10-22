@@ -427,13 +427,13 @@ int main(int argc, char **argv)
         // sinusoidal velocity on top boundary
         double A = 5;
         double f = 1. / 20.;
+        for(int j = 0; j < ny; j++) {
+          SET(&u, 0, j, 0.);
+          SET(&u, nx, j, 0.);
+        }
         for(int i = 0; i < nx; i++) {
-          for(int j = 0; j < ny; j++) {
-            SET(&u, 0, j, 0.);
-            SET(&u, nx, j, 0.);
-            SET(&v, i, 0, 0.);
-            SET(&v, i, ny, A * sin(2 * M_PI * f * t));
-          }
+          SET(&v, i, 0, 0.);
+          SET(&v, i, ny, A * sin(2 * M_PI * f * t));
         }
       }
       else if(param.source_type == 2) {
@@ -449,8 +449,8 @@ int main(int argc, char **argv)
       }
 
       // update eta
-      for(int i = 0; i < nx; i++) {
-        for(int j = 0; j < ny ; j++) {
+      for(int j = 0; j < ny ; j++) {
+        for(int i = 0; i < nx; i++) {
           // TODO: this does not evaluate h at the correct locations
           double h_x_u_i1_j = GET(&h_interp_u, i+1, j);
           double h_x_u_i_j = GET(&h_interp_u, i, j);
@@ -477,8 +477,8 @@ int main(int argc, char **argv)
       }
 
       // update u and v
-      for(int i = 0; i < nx; i++) {
-        for(int j = 0; j < ny; j++) {
+      for(int j = 0; j < ny; j++) {
+        for(int i = 0; i < nx; i++) {
           double c1 = param.dt * param.g;
           double c2 = param.dt * param.gamma;
           double eta_ij = GET(&eta, i, j);
