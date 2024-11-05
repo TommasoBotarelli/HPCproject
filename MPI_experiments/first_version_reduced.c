@@ -383,9 +383,6 @@ int main(int argc, char **argv)
   int name_len;
   MPI_Get_processor_name(processor_name, &name_len);
 
-  printf("Hello world from node %s, I'm rank %d out of %d ranks\n",
-         processor_name, rank, world_size);
-
   struct data eta, u, v;
   // interpolate bathymetry
   struct data h_interp_u;
@@ -422,12 +419,10 @@ int main(int argc, char **argv)
     printf(" - number of time steps: %d\n", nt);
   }
 
-  unsigned int start_i = (nx * coords[1] / dims[1]) + 1;
-  unsigned int   end_i = nx * (coords[1]+1) / dims[1];
-
-  unsigned int start_j = (ny * coords[0] / dims[0]) + 1;
-  unsigned int   end_j = ny * (coords[0]+1) / dims[0];
-
+  unsigned int  start_i = (nx * coords[1] / dims[1]);
+  unsigned int    end_i = nx * (coords[1]+1) / dims[1];
+  unsigned int  start_j = (ny * coords[0] / dims[0]);
+  unsigned int    end_j = ny * (coords[0]+1) / dims[0];
   unsigned int mysize_i = end_i - start_i;
   unsigned int mysize_j = end_j - start_j;
 
@@ -457,6 +452,8 @@ int main(int argc, char **argv)
     }
   }
 
+  printf("################ Rank %d ################\nsizes: %d, %d, %d, %d, %d, %d\neta: nx, ny, dx, dy = %d, %d, %f, %f\nu: nx, ny, dx, dy = %d, %d, %f, %f\nv: nx, ny, dx, dy = %d, %d, %f, %f\n", rank, start_i, end_i, start_j, end_j, mysize_i, mysize_j, eta.nx, eta.ny, eta.dx, eta.dy,u.nx, u.ny, u.dx, u.dy,v.nx, v.ny, v.dx, v.dy);
+
   double start = GET_TIME();
 
   for(int n = 0; n < nt; n++) {
@@ -469,36 +466,7 @@ int main(int argc, char **argv)
     }
 
     // output solution
-    if(param.sampling_rate && !(n % param.sampling_rate)) {
-      /* TODO: vedere se togliere questa parte
-      if (coords[1] == 0){
-        
-        struct data line_data;
-        init_data(&line_data, nx, mysize_j, param.dx, param.dy, 0.);
-        //line_data.values = malloc(sizeof(double) * nx * mysize_j);
-
-        add_values_by_line(&line_data, &eta, mysize_i, mysize_j, dims);
-        
-        double* sender_values = malloc(sizeof(double) * mysize_i * mysize_j);
-
-        int rank_null;
-        int rank_sender;
-
-        for (int j_rank_index = 1; j_rank_index < dims[1]; j_rank_index++){
-          MPI_Cart_shift(cart_comm, 1, j_rank_index, &rank_null, &rank_sender);
-
-          MPI_Recv(sender_values, mysize_i * mysize_j, MPI_DOUBLE, rank_sender);
-
-          add_values_by_line(line_data, )
-        }
-
-      }
-
-      else{
-        MPI_Send()
-      }
-      */
-      
+    if(param.sampling_rate && !(n % param.sampling_rate)) {   
       char str[10];
       sprintf(str, "0%d_0%d_", coords[0], coords[1]);
 
@@ -519,35 +487,36 @@ int main(int argc, char **argv)
       // sinusoidal velocity on top boundary
       double A = 5;
       double f = 1. / 20.;
-      //if (coords[1] == 0){
-      if (1){
+      
+      if (coords[1] == 0){
         for(int j = 0; j < mysize_j; j++) {
           // a sinistra
           SET(&u, 0, j, 0.);
         }
+      
       }
-      //if (coords[1] == dims[1] - 1)
-      if (1){
+
+      if (coords[1] == dims[1] - 1){
         for(int j = 0; j < mysize_j; j++) {
           // a destra
           SET(&u, mysize_i, j, 0.);
         }
       }
-      //if (coords[0] == 0)
-      if (1){
-        for(int i = 0; i < mysize_i; i++) {
-          // sopra
-          SET(&v, i, 0, 0.);
-        }
-      }
-      //if (coords[0] == dims[0]-1)
-      if (1){
+
+      if (coords[0] == dims[0]-1){
         for(int i = 0; i < mysize_i; i++) {
           // sotto
-          SET(&v, i, mysize_j, A * sin(2 * M_PI * f * t));
+          SET(&v, i, mysize_j, 0.);
         }
       }
-      printf("Rank %d: Ho messo le boundary condition", rank);
+      
+      if (coords[0] == 0){
+        for(int i = 0; i < mysize_i; i++) {
+          // sopra
+          SET(&v, i, 0, A * sin(2 * M_PI * f * t));
+        }
+      }
+      //printf("Rank %d: Ho messo le boundary condition", rank);
     }
     else if(param.source_type == 2) {
       // sinusoidal elevation in the middle of the domain
@@ -580,7 +549,7 @@ int main(int argc, char **argv)
                 - param.dt / param.dx * (h_x_u_i1_j * GET(&u, i+1, j) - h_x_u_i_j * GET(&u, i, j))
                 - param.dt / param.dy * (h_x_v_i_j1 * GET(&v, i, j+1) - h_x_v_i_j * GET(&v, i, j));
         
-        if (eta_ij > 10.0 || eta_ij < -10.0 || isnan(eta_ij)){
+        if (eta_ij > 100.0 || eta_ij < -100.0 || isnan(eta_ij)){
           printf("i: %d, j: %d, value: %f", i, j, eta_ij);
           return 1;
         }
@@ -589,6 +558,8 @@ int main(int argc, char **argv)
       }
     }
 
+    // prima di questo serve fare isend e irecv come scritto nel foglio
+
     // update u and v
     for(int j = 0; j < mysize_j; j++) {
       for(int i = 0; i < mysize_i; i++) {
@@ -596,40 +567,32 @@ int main(int argc, char **argv)
         double c2 = param.dt * param.gamma;
         double eta_ij = GET(&eta, i, j);
 
-        double eta_imj = GET(&eta, (i == 0) ? 0 : i - 1, j);
-        double eta_ijm = GET(&eta, i, (j == 0) ? 0 : j - 1);
-        
-        double u_ij = (1. - c2) * GET(&u, i, j)
+        if (i != 0){
+          double eta_imj = GET(&eta, i - 1, j);
+
+          double u_ij = (1. - c2) * GET(&u, i, j)
           - c1 / param.dx * (eta_ij - eta_imj);
 
-        double v_ij = (1. - c2) * GET(&v, i, j)
+          SET(&u, i, j, u_ij);
+        }
+        if (j != 0){
+          double eta_ijm = GET(&eta, i, j - 1);
+
+          double v_ij = (1. - c2) * GET(&v, i, j)
           - c1 / param.dy * (eta_ij - eta_ijm);
 
-        SET(&u, i, j, u_ij);
-        SET(&v, i, j, v_ij);
+          SET(&v, i, j, v_ij);
+        }
       }
     }
 
+    // fare check sui Irecv -> waitall 
+    // aggiornare le rimanenti celle
+
+    // fare check su isend se tutti hanno ricevuto vai avanti altrimenti aspetta -> waitall
   }
 
   MPI_Finalize();
-
-  //write_manifest_vtk("water elevation", param.output_eta_filename,
-  //                  param.dt, nt, param.sampling_rate);
-  //write_manifest_vtk("x velocity", param.output_u_filename,
-  //                   param.dt, nt, param.sampling_rate);
-  //write_manifest_vtk("y velocity", param.output_v_filename,
-  //                   param.dt, nt, param.sampling_rate);
-
-  double time = GET_TIME() - start;
-  printf("\nDone: %g seconds (%g MUpdates/s)\n", time,
-        1e-6 * (double)eta.nx * (double)eta.ny * (double)nt / time);
-
-  free_data(&h_interp_u);
-  free_data(&h_interp_v);
-  free_data(&eta);
-  free_data(&u);
-  free_data(&v);
 
   return 0;
 }
