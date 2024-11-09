@@ -358,8 +358,8 @@ int main(int argc, char **argv)
   }
 
   init_data(&h_interp_v, v.nx, v.ny, param.dx, param.dy, 0.);
-  for(int j = 0; j < v.ny ; j++) {
-    for(int i = 0; i < v.nx + 1; i++) {
+  for(int j = 0; j < v.ny +1; j++) {
+    for(int i = 0; i < v.nx ; i++) {
       double x = ((double)i + 0.5) * param.dx;
       double y = j * param.dy;
       double val = interpolate_data(&h, x, y);

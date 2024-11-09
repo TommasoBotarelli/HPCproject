@@ -30,10 +30,6 @@ struct data {
   double *values;
 };
 
-struct data_message {
-  int message_size;
-  double *values;
-};
 
 #define GET(data, i, j) ((data)->values[(data)->nx * (j) + (i)])
 #define SET(data, i, j, val) ((data)->values[(data)->nx * (j) + (i)] = (val))
@@ -44,10 +40,49 @@ struct data_message {
 #define ERROR_VALUE -1
 #define MAX_ITERATION 10
 
+typedef enum neighbor {
+  UP    = 0,
+  DOWN  = 1,
+  LEFT  = 2,
+  RIGHT = 3
+
+} neighbor_t;
+
 struct time_records {
   int counter;
   double times[MAX_ITERATION];
 };
+
+struct ghost_cells {
+    int nx;   //size of up and down
+    int ny;   //size of lef and right
+    double *up;
+    double *down;
+    double *left;
+    double *right;
+};
+
+void init_ghost_cells(struct ghost_cells *ghost_cells, int nx, int ny){
+  printf("nx = %d\nny = %d\n", nx, ny);
+  ghost_cells->nx = nx;
+  ghost_cells->ny = ny;
+  printf("ghost cell.nx = %d\nghost cell.ny = %d\n", ghost_cells->nx, ghost_cells->ny);
+  ghost_cells->up = (double*)malloc(nx * sizeof(double));  
+  ghost_cells->down = (double*)malloc(nx * sizeof(double));
+  ghost_cells->left = (double*)malloc(ny * sizeof(double));
+  ghost_cells->right = (double*)malloc(ny * sizeof(double));
+
+  for (int i = 0; i < nx; i++){
+    ghost_cells->up[i] = 0.0;
+    ghost_cells->down[i] = 0.0;
+  }
+
+  for (int i = 0; i < ny; i++){
+    ghost_cells->right[i] = 0.0;
+    ghost_cells->left[i] = 0.0;
+  }
+}
+
 
 int read_parameters(struct parameters *param, const char *filename)
 {
@@ -254,6 +289,13 @@ void free_data(struct data *data)
   free(data->values);
 }
 
+void free_ghost_cells(struct ghost_cells *ghost) {
+    free(ghost->up);
+    free(ghost->down);
+    free(ghost->left);
+    free(ghost->right);
+}
+
 void print_to_file(const struct time_records *times, const char *filename){
   FILE *file = fopen(filename, "w");
 
@@ -366,6 +408,7 @@ int main(int argc, char **argv)
   int reorder = 0;
 
   int coords[2];
+  int neighbors[4];
 
   MPI_Comm cart_comm;
 
@@ -454,8 +497,31 @@ int main(int argc, char **argv)
 
   printf("################ Rank %d ################\nsizes: %d, %d, %d, %d, %d, %d\neta: nx, ny, dx, dy = %d, %d, %f, %f\nu: nx, ny, dx, dy = %d, %d, %f, %f\nv: nx, ny, dx, dy = %d, %d, %f, %f\n", rank, start_i, end_i, start_j, end_j, mysize_i, mysize_j, eta.nx, eta.ny, eta.dx, eta.dy,u.nx, u.ny, u.dx, u.dy,v.nx, v.ny, v.dx, v.dy);
 
+  struct ghost_cells ghost_cells_in;
+  struct ghost_cells ghost_cells_out;
+
+  init_ghost_cells(&ghost_cells_in, mysize_i, mysize_j);
+  init_ghost_cells(&ghost_cells_out, mysize_i, mysize_j);
+
+  printf("ghost_cells_in.nx = %d\nghost_cells_in.ny = %d\n", ghost_cells_in.nx, ghost_cells_in.ny);
+  printf("Appena creato ghost_cells_out.nx = %d\nghost_cells_out.ny = %d\n", ghost_cells_out.nx, ghost_cells_out.ny);
+
+  MPI_Cart_shift(cart_comm, 0, 1, 
+                  &neighbors[UP], &neighbors[DOWN]);
+
+  MPI_Cart_shift(cart_comm, 1, 1, 
+                  &neighbors[LEFT], &neighbors[RIGHT]);
+
+  printf("Rank = %4d - Coords = (%3d, %3d)"
+         " - Neighbors (up, down, left, right) = (%3d, %3d, %3d, %3d)\n",
+            rank, coords[0], coords[1], 
+            neighbors[UP], neighbors[DOWN], neighbors[LEFT], neighbors[RIGHT]);
+
   double start = GET_TIME();
 
+  //printf("Prima del for n ghost_cells_out.nx = %d\nghost_cells_out.ny = %d\n", ghost_cells_out.nx, ghost_cells_out.ny);
+
+  //for(int n = 0; n < nt; n++) {
   for(int n = 0; n < nt; n++) {
 
     if(n && (n % (nt / 10)) == 0 && rank == 0) {
@@ -480,7 +546,7 @@ int main(int argc, char **argv)
 
     // mysize_i ultima riga 
     // mysize_j ultima colonna
-
+    //printf("Prima delle boundary ghost_cells_out.nx = %d\nghost_cells_out.ny = %d\n", ghost_cells_out.nx, ghost_cells_out.ny);
     // impose boundary conditions
     double t = n * param.dt;
     if(param.source_type == 1) {
@@ -529,7 +595,8 @@ int main(int argc, char **argv)
       printf("Error: Unknown source type %d\n", param.source_type);
       exit(0);
     }
-
+    //printf("Dopo le boundary ghost_cells_out.nx = %d\nghost_cells_out.ny = %d\n", ghost_cells_out.nx, ghost_cells_out.ny);
+    
     // update eta
     for(int j = 0; j < mysize_j ; j++) {
       for(int i = 0; i < mysize_i; i++) {
@@ -558,7 +625,37 @@ int main(int argc, char **argv)
       }
     }
 
-    // prima di questo serve fare isend e irecv come scritto nel foglio
+    //printf("Prima dei for ghost_cells_out.nx = %d\nghost_cells_out.ny = %d", ghost_cells_out.nx, ghost_cells_out.ny);
+
+    for(int i = 0; i < mysize_i; i++) {
+      ghost_cells_out.up[i] = GET(&eta, i, 0);
+      ghost_cells_out.down[i] = GET(&eta, i, mysize_j-1);
+    }
+
+    for(int j = 0; j < mysize_j; j++) {
+      ghost_cells_out.left[j] = GET(&eta, 0, j);
+      ghost_cells_out.right[j] = GET(&eta, mysize_i-1, j);
+    }
+
+    MPI_Request requests_send[4];
+    MPI_Request requests_recv[4];
+
+    //printf("Prima dei mex ghost_cells_in.nx = %d\nghost_cells_in.ny = %d", ghost_cells_in.nx, ghost_cells_in.ny);
+    //printf("Prima dei mex ghost_cells_out.nx = %d\nghost_cells_out.ny = %d", ghost_cells_out.nx, ghost_cells_out.ny);
+
+    MPI_Isend(ghost_cells_out.up, mysize_i, MPI_DOUBLE, neighbors[UP], 0, cart_comm, &requests_send[0]);
+    MPI_Isend(ghost_cells_out.down, mysize_i, MPI_DOUBLE, neighbors[DOWN], 1, cart_comm, &requests_send[1]);
+    MPI_Isend(ghost_cells_out.left, mysize_j, MPI_DOUBLE, neighbors[LEFT], 2, cart_comm, &requests_send[2]);
+    MPI_Isend(ghost_cells_out.right, mysize_j, MPI_DOUBLE, neighbors[RIGHT], 3, cart_comm, &requests_send[3]);
+    
+    printf("################ Rank %d ################\nISend:\nUP (from: %d) e DOWN (from: %d) -> size = %d (mysize_i = %d)\nLEFT (from: %d) e RIGHT (from: %d) -> size = %d (mysize_j = %d)\n", rank, neighbors[UP], neighbors[DOWN], ghost_cells_out.nx, mysize_i, neighbors[LEFT], neighbors[RIGHT], ghost_cells_out.ny, mysize_j);
+
+    MPI_Irecv(ghost_cells_in.up, mysize_i, MPI_DOUBLE, neighbors[UP], 1, cart_comm, &requests_recv[0]);
+    MPI_Irecv(ghost_cells_in.down, mysize_i, MPI_DOUBLE, neighbors[DOWN], 0, cart_comm, &requests_recv[1]);
+    MPI_Irecv(ghost_cells_in.left, mysize_j, MPI_DOUBLE, neighbors[LEFT], 3, cart_comm, &requests_recv[2]);
+    MPI_Irecv(ghost_cells_in.right, mysize_j, MPI_DOUBLE, neighbors[RIGHT], 2, cart_comm, &requests_recv[3]);
+
+    printf("################ Rank %d ################\nIRecv:\nUP (from: %d) e DOWN (from: %d) -> size = %d (mysize_i = %d)\nLEFT (from: %d) e RIGHT (from: %d) -> size = %d (mysize_j = %d)\n", rank, neighbors[UP], neighbors[DOWN], ghost_cells_in.nx, mysize_i, neighbors[LEFT], neighbors[RIGHT], ghost_cells_in.ny, mysize_j);
 
     // update u and v
     for(int j = 0; j < mysize_j; j++) {
@@ -586,11 +683,80 @@ int main(int argc, char **argv)
       }
     }
 
-    // fare check sui Irecv -> waitall 
-    // aggiornare le rimanenti celle
+    
+    printf("################ Rank %d ################\nHo aggioranto u e v... Adesso aspetto\n", rank);
 
-    // fare check su isend se tutti hanno ricevuto vai avanti altrimenti aspetta -> waitall
+    MPI_Waitall(4, requests_recv, MPI_STATUSES_IGNORE);
+
+    printf("################ Rank %d ################\nHo ricevuto i messaggi\n", rank);
+    
+    // update u e v rimanenti
+
+    for(int i = 0; i < mysize_i; i++) {
+      double c1 = param.dt * param.g;
+      double c2 = param.dt * param.gamma;
+
+      if (coords[0] != 0){
+        double eta_ij_up = GET(&eta, i, 0);
+        double eta_ijm_up = ghost_cells_in.up[i];
+        
+        double v_ij_up = (1. - c2) * GET(&v, i, 0)
+            - c1 / param.dy * (eta_ij_up - eta_ijm_up);
+
+        SET(&v, i, 0, v_ij_up); 
+      }
+
+      if (coords[0] != dims[0]-1){
+        double eta_ij_down = GET(&eta, i, mysize_j-1);
+        double eta_ijm_down = ghost_cells_in.down[i];
+
+        double v_ij_down = (1. - c2) * GET(&v, i, mysize_j)
+            + c1 / param.dy * (eta_ij_down - eta_ijm_down);
+
+        SET(&v, i, mysize_j, v_ij_down);
+      }
+    }
+
+
+    for(int j = 0; j < mysize_j; j++) {
+      double c1 = param.dt * param.g;
+      double c2 = param.dt * param.gamma;
+
+      if (coords[1] != 0){
+        double eta_ij_left = GET(&eta, 0, j);
+        double eta_imj_left = ghost_cells_in.left[j];
+
+        double u_ij_left = (1. - c2) * GET(&u, 0, j) - c1 / param.dx * (eta_ij_left - eta_imj_left);
+
+        SET(&u, 0, j, u_ij_left);
+      }
+
+      if (coords[1] != dims[1]-1){
+        double eta_ij_right = GET(&eta, mysize_i-1, j);
+        double eta_imj_right = ghost_cells_in.right[j];
+
+        double u_ij_right = (1. - c2) * GET(&u, mysize_j, j) + c1 / param.dx * (eta_ij_right - eta_imj_right);
+
+        SET(&u, mysize_i, j, u_ij_right);
+      }
+    }
+
+    printf("################ Rank %d ################\nHo aggiornato anche i rimnenti\n", rank);
+
+    MPI_Waitall(4, requests_send, MPI_STATUSES_IGNORE);
+
+    printf("################ Rank %d ################\nPasso al successivo step\n", rank);
+    
   }
+
+  free_data(&h_interp_u);
+  free_data(&h_interp_v);
+  free_data(&eta);
+  free_data(&u);
+  free_data(&v);
+
+  free_ghost_cells(&ghost_cells_in);
+  free_ghost_cells(&ghost_cells_out);
 
   MPI_Finalize();
 
