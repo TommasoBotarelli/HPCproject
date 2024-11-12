@@ -499,9 +499,6 @@ int main(int argc, char **argv)
   init_ghost_cells(&ghost_cells_in, mysize_i, mysize_j);
   init_ghost_cells(&ghost_cells_out, mysize_i, mysize_j);
 
-  printf("ghost_cells_in.nx = %d\nghost_cells_in.ny = %d\n", ghost_cells_in.nx, ghost_cells_in.ny);
-  printf("Appena creato ghost_cells_out.nx = %d\nghost_cells_out.ny = %d\n", ghost_cells_out.nx, ghost_cells_out.ny);
-
   MPI_Cart_shift(cart_comm, 0, 1, 
                   &neighbors[UP], &neighbors[DOWN]);
 
@@ -596,16 +593,11 @@ int main(int argc, char **argv)
         double h_x_v_i_j1 = GET(&h_interp_v, i, j+1);
         double h_x_v_i_j = GET(&h_interp_v, i, j);
 
-        if (h_x_u_i1_j != 20.0 || h_x_u_i_j != 20.0 || h_x_v_i_j1 != 20.0 || h_x_v_i_j != 20){
-          printf("i: %d, j: %d, value: %f | %f | %f | %f\n", i, j, h_x_u_i1_j, h_x_u_i_j, h_x_v_i_j1, h_x_v_i_j);
-          return 1;
-        }
-
         double eta_ij = GET(&eta, i, j) 
                 - param.dt / param.dx * (h_x_u_i1_j * GET(&u, i+1, j) - h_x_u_i_j * GET(&u, i, j))
                 - param.dt / param.dy * (h_x_v_i_j1 * GET(&v, i, j+1) - h_x_v_i_j * GET(&v, i, j));
         
-        if (eta_ij > 100.0 || eta_ij < -100.0 || isnan(eta_ij)){
+        if (isnan(eta_ij)){
           printf("i: %d, j: %d, value: %f", i, j, eta_ij);
           return 1;
         }
@@ -641,26 +633,27 @@ int main(int argc, char **argv)
 
     printf("################ Rank %d ################\nIRecv:\nUP (from: %d) e DOWN (from: %d) -> size = %d (mysize_i = %d)\nLEFT (from: %d) e RIGHT (from: %d) -> size = %d (mysize_j = %d)\n", rank, neighbors[UP], neighbors[DOWN], ghost_cells_in.nx, mysize_i, neighbors[LEFT], neighbors[RIGHT], ghost_cells_in.ny, mysize_j);
 
+    double c1_dx = param.dt * param.g / param.dx;
+    double c1_dy = param.dt * param.g / param.dy;
+    double one_minus_c2 = 1.0 - param.dt * param.gamma;
     // update u and v
     for(int j = 0; j < mysize_j; j++) {
       for(int i = 0; i < mysize_i; i++) {
-        double c1 = param.dt * param.g;
-        double c2 = param.dt * param.gamma;
         double eta_ij = GET(&eta, i, j);
 
         if (i != 0){
           double eta_imj = GET(&eta, i - 1, j);
 
-          double u_ij = (1. - c2) * GET(&u, i, j)
-          - c1 / param.dx * (eta_ij - eta_imj);
+          double u_ij = one_minus_c2 * GET(&u, i, j)
+          - c1_dx * (eta_ij - eta_imj);
 
           SET(&u, i, j, u_ij);
         }
         if (j != 0){
           double eta_ijm = GET(&eta, i, j - 1);
 
-          double v_ij = (1. - c2) * GET(&v, i, j)
-          - c1 / param.dy * (eta_ij - eta_ijm);
+          double v_ij = one_minus_c2 * GET(&v, i, j)
+          - c1_dy * (eta_ij - eta_ijm);
 
           SET(&v, i, j, v_ij);
         }
@@ -677,15 +670,12 @@ int main(int argc, char **argv)
     // update u e v rimanenti
 
     for(int i = 0; i < mysize_i; i++) {
-      double c1 = param.dt * param.g;
-      double c2 = param.dt * param.gamma;
-
       if (coords[0] != 0){
         double eta_ij_up = GET(&eta, i, 0);
         double eta_ijm_up = ghost_cells_in.up[i];
         
-        double v_ij_up = (1. - c2) * GET(&v, i, 0)
-            - c1 / param.dy * (eta_ij_up - eta_ijm_up);
+        double v_ij_up = one_minus_c2 * GET(&v, i, 0)
+            - c1_dy * (eta_ij_up - eta_ijm_up);
 
         SET(&v, i, 0, v_ij_up); 
       }
@@ -694,8 +684,8 @@ int main(int argc, char **argv)
         double eta_ij_down = GET(&eta, i, mysize_j-1);
         double eta_ijm_down = ghost_cells_in.down[i];
 
-        double v_ij_down = (1. - c2) * GET(&v, i, mysize_j)
-            + c1 / param.dy * (eta_ij_down - eta_ijm_down);
+        double v_ij_down = one_minus_c2 * GET(&v, i, mysize_j)
+            + c1_dy * (eta_ij_down - eta_ijm_down);
 
         SET(&v, i, mysize_j, v_ij_down);
       }
@@ -703,14 +693,11 @@ int main(int argc, char **argv)
 
 
     for(int j = 0; j < mysize_j; j++) {
-      double c1 = param.dt * param.g;
-      double c2 = param.dt * param.gamma;
-
       if (coords[1] != 0){
         double eta_ij_left = GET(&eta, 0, j);
         double eta_imj_left = ghost_cells_in.left[j];
 
-        double u_ij_left = (1. - c2) * GET(&u, 0, j) - c1 / param.dx * (eta_ij_left - eta_imj_left);
+        double u_ij_left = one_minus_c2 * GET(&u, 0, j) - c1_dx * (eta_ij_left - eta_imj_left);
 
         SET(&u, 0, j, u_ij_left);
       }
@@ -719,7 +706,7 @@ int main(int argc, char **argv)
         double eta_ij_right = GET(&eta, mysize_i-1, j);
         double eta_imj_right = ghost_cells_in.right[j];
 
-        double u_ij_right = (1. - c2) * GET(&u, mysize_j, j) + c1 / param.dx * (eta_ij_right - eta_imj_right);
+        double u_ij_right = one_minus_c2 * GET(&u, mysize_j, j) + c1_dx * (eta_ij_right - eta_imj_right);
 
         SET(&u, mysize_i, j, u_ij_right);
       }
