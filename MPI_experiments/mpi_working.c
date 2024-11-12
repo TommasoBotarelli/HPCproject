@@ -319,8 +319,6 @@ void print_to_file(const struct time_records *times, const char *filename){
 
 double interpolate_data(const struct data *data, double x, double y)
 {
-  // TODO: this returns the nearest neighbor, should implement actual
-  // interpolation instead
   double real_i = x / data->dx;
   double real_j = y / data->dy;
 
@@ -333,8 +331,6 @@ double interpolate_data(const struct data *data, double x, double y)
   else if(j > data->ny - 1) j = data->ny - 1;
 
   double val;
-
-  // TODO: rivedere i controlli se sono necessari o meno
   
   if (i >= data->nx-1 && j >= data->ny-1)
   {
@@ -519,9 +515,6 @@ int main(int argc, char **argv)
 
   double start = GET_TIME();
 
-  //printf("Prima del for n ghost_cells_out.nx = %d\nghost_cells_out.ny = %d\n", ghost_cells_out.nx, ghost_cells_out.ny);
-
-  //for(int n = 0; n < nt; n++) {
   for(int n = 0; n < nt; n++) {
 
     if(n && (n % (nt / 10)) == 0 && rank == 0) {
@@ -544,9 +537,7 @@ int main(int argc, char **argv)
       //write_data_vtk(&v, "y velocity", param.output_v_filename, n);
     }
 
-    // mysize_i ultima riga 
-    // mysize_j ultima colonna
-    //printf("Prima delle boundary ghost_cells_out.nx = %d\nghost_cells_out.ny = %d\n", ghost_cells_out.nx, ghost_cells_out.ny);
+    
     // impose boundary conditions
     double t = n * param.dt;
     if(param.source_type == 1) {
@@ -582,7 +573,6 @@ int main(int argc, char **argv)
           SET(&v, i, 0, A * sin(2 * M_PI * f * t));
         }
       }
-      //printf("Rank %d: Ho messo le boundary condition", rank);
     }
     else if(param.source_type == 2) {
       // sinusoidal elevation in the middle of the domain
@@ -595,7 +585,6 @@ int main(int argc, char **argv)
       printf("Error: Unknown source type %d\n", param.source_type);
       exit(0);
     }
-    //printf("Dopo le boundary ghost_cells_out.nx = %d\nghost_cells_out.ny = %d\n", ghost_cells_out.nx, ghost_cells_out.ny);
     
     // update eta
     for(int j = 0; j < mysize_j ; j++) {
@@ -625,8 +614,6 @@ int main(int argc, char **argv)
       }
     }
 
-    //printf("Prima dei for ghost_cells_out.nx = %d\nghost_cells_out.ny = %d", ghost_cells_out.nx, ghost_cells_out.ny);
-
     for(int i = 0; i < mysize_i; i++) {
       ghost_cells_out.up[i] = GET(&eta, i, 0);
       ghost_cells_out.down[i] = GET(&eta, i, mysize_j-1);
@@ -639,9 +626,6 @@ int main(int argc, char **argv)
 
     MPI_Request requests_send[4];
     MPI_Request requests_recv[4];
-
-    //printf("Prima dei mex ghost_cells_in.nx = %d\nghost_cells_in.ny = %d", ghost_cells_in.nx, ghost_cells_in.ny);
-    //printf("Prima dei mex ghost_cells_out.nx = %d\nghost_cells_out.ny = %d", ghost_cells_out.nx, ghost_cells_out.ny);
 
     MPI_Isend(ghost_cells_out.up, mysize_i, MPI_DOUBLE, neighbors[UP], 0, cart_comm, &requests_send[0]);
     MPI_Isend(ghost_cells_out.down, mysize_i, MPI_DOUBLE, neighbors[DOWN], 1, cart_comm, &requests_send[1]);
