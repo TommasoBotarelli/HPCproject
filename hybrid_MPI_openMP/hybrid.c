@@ -5,6 +5,7 @@
 #include <string.h>
 #include <time.h>
 #include <mpi.h>
+#include <omp.h>
 
 #if defined(_OPENMP)
 #include <omp.h>
@@ -521,8 +522,19 @@ int main(int argc, char **argv)
   init_data(&v, mysize_i, mysize_j+1, param.dx, param.dy, 0.);
 
   init_data(&h_interp_u, mysize_i + 1, mysize_j, param.dx, param.dy, 0.);
-  for(int j = start_j; j < end_j; j++) {
-    for(int i = start_i; i < end_i + 1; i++) {
+
+  int tid, nthreads; 
+  
+  #pragma omp parallel for private(tid, nthreads)
+  for (int i = 0; i < 4; ++i){
+    tid = omp_get_thread_num();
+    nthreads = omp_get_num_threads();
+    printf("Hello, I'm thread %d of %d.\n", tid, nthreads);
+  }
+
+  #pragma omp parallel for collapse(2)
+  for(int j = start_j; j < end_j; ++j) {
+    for(int i = start_i; i < end_i + 1; ++i) {
       double x = i * param.dx;
       double y = ((double)j + 0.5) * param.dy;
       double val = interpolate_data(&h, x, y);
@@ -532,6 +544,8 @@ int main(int argc, char **argv)
   }
 
   init_data(&h_interp_v, mysize_i, mysize_j + 1, param.dx, param.dy, 0.);
+
+  #pragma omp parallel for collapse(2)
   for(int j = start_j; j < end_j + 1; j++) {
     for(int i = start_i; i < end_i; i++) {
       double x = ((double)i + 0.5) * param.dx;
@@ -541,8 +555,6 @@ int main(int argc, char **argv)
       SET(&h_interp_v, i - start_i, j - start_j, val);
     }
   }
-
-  printf("################ Rank %d ################\nsizes: %d, %d, %d, %d, %d, %d\neta: nx, ny, dx, dy = %d, %d, %f, %f\nu: nx, ny, dx, dy = %d, %d, %f, %f\nv: nx, ny, dx, dy = %d, %d, %f, %f\n", rank, start_i, end_i, start_j, end_j, mysize_i, mysize_j, eta.nx, eta.ny, eta.dx, eta.dy,u.nx, u.ny, u.dx, u.dy,v.nx, v.ny, v.dx, v.dy);
 
   struct ghost_cells ghost_cells_in;
   struct ghost_cells ghost_cells_out;
@@ -634,6 +646,7 @@ int main(int argc, char **argv)
       exit(0);
     }
     
+    #pragma omp parallel for collapse(2)
     // update eta
     for(int j = 0; j < mysize_j ; j++) {
       for(int i = 0; i < mysize_i; i++) {
@@ -648,10 +661,12 @@ int main(int argc, char **argv)
                 - param.dt / param.dx * (h_x_u_i1_j * GET(&u, i+1, j) - h_x_u_i_j * GET(&u, i, j))
                 - param.dt / param.dy * (h_x_v_i_j1 * GET(&v, i, j+1) - h_x_v_i_j * GET(&v, i, j));
         
+        /*
         if (isnan(eta_ij)){
           printf("i: %d, j: %d, value: %f", i, j, eta_ij);
           return 1;
         }
+        */
         
         SET(&eta, i, j, eta_ij);
       }
@@ -674,19 +689,17 @@ int main(int argc, char **argv)
     MPI_Isend(ghost_cells_out.down, mysize_i, MPI_DOUBLE, neighbors[DOWN], 1, cart_comm, &requests_send[1]);
     MPI_Isend(ghost_cells_out.left, mysize_j, MPI_DOUBLE, neighbors[LEFT], 2, cart_comm, &requests_send[2]);
     MPI_Isend(ghost_cells_out.right, mysize_j, MPI_DOUBLE, neighbors[RIGHT], 3, cart_comm, &requests_send[3]);
-    
-    printf("################ Rank %d ################\nISend:\nUP (from: %d) e DOWN (from: %d) -> size = %d (mysize_i = %d)\nLEFT (from: %d) e RIGHT (from: %d) -> size = %d (mysize_j = %d)\n", rank, neighbors[UP], neighbors[DOWN], ghost_cells_out.nx, mysize_i, neighbors[LEFT], neighbors[RIGHT], ghost_cells_out.ny, mysize_j);
 
     MPI_Irecv(ghost_cells_in.up, mysize_i, MPI_DOUBLE, neighbors[UP], 1, cart_comm, &requests_recv[0]);
     MPI_Irecv(ghost_cells_in.down, mysize_i, MPI_DOUBLE, neighbors[DOWN], 0, cart_comm, &requests_recv[1]);
     MPI_Irecv(ghost_cells_in.left, mysize_j, MPI_DOUBLE, neighbors[LEFT], 3, cart_comm, &requests_recv[2]);
     MPI_Irecv(ghost_cells_in.right, mysize_j, MPI_DOUBLE, neighbors[RIGHT], 2, cart_comm, &requests_recv[3]);
 
-    printf("################ Rank %d ################\nIRecv:\nUP (from: %d) e DOWN (from: %d) -> size = %d (mysize_i = %d)\nLEFT (from: %d) e RIGHT (from: %d) -> size = %d (mysize_j = %d)\n", rank, neighbors[UP], neighbors[DOWN], ghost_cells_in.nx, mysize_i, neighbors[LEFT], neighbors[RIGHT], ghost_cells_in.ny, mysize_j);
-
     double c1_dx = param.dt * param.g / param.dx;
     double c1_dy = param.dt * param.g / param.dy;
     double one_minus_c2 = 1.0 - param.dt * param.gamma;
+
+    #pragma omp parallel for collapse(2)
     // update u and v
     for(int j = 0; j < mysize_j; j++) {
       for(int i = 0; i < mysize_i; i++) {
@@ -711,15 +724,10 @@ int main(int argc, char **argv)
       }
     }
 
-    
-    printf("################ Rank %d ################\nHo aggioranto u e v... Adesso aspetto\n", rank);
 
     MPI_Waitall(4, requests_recv, MPI_STATUSES_IGNORE);
-
-    printf("################ Rank %d ################\nHo ricevuto i messaggi\n", rank);
     
     // update u e v rimanenti
-
     for(int i = 0; i < mysize_i; i++) {
       if (coords[0] != 0){
         double eta_ij_up = GET(&eta, i, 0);
@@ -763,11 +771,7 @@ int main(int argc, char **argv)
       }
     }
 
-    printf("################ Rank %d ################\nHo aggiornato anche i rimnenti\n", rank);
-
     MPI_Waitall(4, requests_send, MPI_STATUSES_IGNORE);
-
-    printf("################ Rank %d ################\nPasso al successivo step\n", rank);
     
   }
 
