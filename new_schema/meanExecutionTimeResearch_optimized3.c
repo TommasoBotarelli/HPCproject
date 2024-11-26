@@ -405,6 +405,13 @@ int main(int argc, char **argv)
 
     double start = GET_TIME();
 
+    double dt_dx = param.dt / param.dx;
+    double dt_dy = param.dt / param.dy;
+
+    double c1_dx = param.dt * param.g / param.dx;
+    double c1_dy = param.dt * param.g / param.dy;
+    double one_minus_c2 = 1. - param.dt * param.gamma;
+
     for(int n = 0; n < nt; n++) {
 
       if(n && (n % (nt / 10)) == 0) {
@@ -431,9 +438,10 @@ int main(int argc, char **argv)
           SET(&u, 0, j, 0.);
           SET(&u, nx, j, 0.);
         }
+        double a_sin_value = A * sin(2 * M_PI * f * t);
         for(int i = 0; i < nx; i++) {
           SET(&v, i, 0, 0.);
-          SET(&v, i, ny, A * sin(2 * M_PI * f * t));
+          SET(&v, i, ny, a_sin_value);
         }
       }
       else if(param.source_type == 2) {
@@ -464,8 +472,8 @@ int main(int argc, char **argv)
           }
 
           double eta_ij = GET(&eta, i, j) 
-                  - param.dt / param.dx * (h_x_u_i1_j * GET(&u, i+1, j) - h_x_u_i_j * GET(&u, i, j))
-                  - param.dt / param.dy * (h_x_v_i_j1 * GET(&v, i, j+1) - h_x_v_i_j * GET(&v, i, j));
+                  - dt_dx * (h_x_u_i1_j * GET(&u, i+1, j) - h_x_u_i_j * GET(&u, i, j))
+                  - dt_dy * (h_x_v_i_j1 * GET(&v, i, j+1) - h_x_v_i_j * GET(&v, i, j));
           
           if (eta_ij > 10.0 || eta_ij < -10.0 || isnan(eta_ij)){
             printf("i: %d, j: %d, value: %f", i, j, eta_ij);
@@ -479,15 +487,13 @@ int main(int argc, char **argv)
       // update u and v
       for(int j = 0; j < ny; j++) {
         for(int i = 0; i < nx; i++) {
-          double c1 = param.dt * param.g;
-          double c2 = param.dt * param.gamma;
           double eta_ij = GET(&eta, i, j);
           double eta_imj = GET(&eta, (i == 0) ? 0 : i - 1, j);
           double eta_ijm = GET(&eta, i, (j == 0) ? 0 : j - 1);
-          double u_ij = (1. - c2) * GET(&u, i, j)
-            - c1 / param.dx * (eta_ij - eta_imj);
-          double v_ij = (1. - c2) * GET(&v, i, j)
-            - c1 / param.dy * (eta_ij - eta_ijm);
+          double u_ij = one_minus_c2 * GET(&u, i, j)
+            - c1_dx * (eta_ij - eta_imj);
+          double v_ij = one_minus_c2 * GET(&v, i, j)
+            - c1_dy * (eta_ij - eta_ijm);
           SET(&u, i, j, u_ij);
           SET(&v, i, j, v_ij);
         }

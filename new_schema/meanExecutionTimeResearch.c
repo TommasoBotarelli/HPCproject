@@ -36,7 +36,7 @@ struct data {
 #define GET_Y_COORD(data, i) ((data)->dy * (i))
 
 #define ERROR_VALUE -1
-#define MAX_ITERATION 10
+#define MAX_ITERATION 50
 
 struct time_records {
   int counter;
@@ -416,7 +416,7 @@ int main(int argc, char **argv)
 
       // output solution
       if(param.sampling_rate && !(n % param.sampling_rate)) {
-        write_data_vtk(&eta, "water elevation", param.output_eta_filename, n);
+        //write_data_vtk(&eta, "water elevation", param.output_eta_filename, n);
         //write_data_vtk(&u, "x velocity", param.output_u_filename, n);
         //write_data_vtk(&v, "y velocity", param.output_v_filename, n);
       }
@@ -495,8 +495,8 @@ int main(int argc, char **argv)
 
     }
 
-    write_manifest_vtk("water elevation", param.output_eta_filename,
-                      param.dt, nt, param.sampling_rate);
+    //write_manifest_vtk("water elevation", param.output_eta_filename,
+    //                  param.dt, nt, param.sampling_rate);
     //write_manifest_vtk("x velocity", param.output_u_filename,
     //                   param.dt, nt, param.sampling_rate);
     //write_manifest_vtk("y velocity", param.output_v_filename,
