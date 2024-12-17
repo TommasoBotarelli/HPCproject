@@ -3,6 +3,7 @@ TODO:
 - [x] domande 1/2/3/4
 - [ ] domanda 10: codice per GPU
 - [x] fare grafico per arithmetic analysis
+- [ ] implementazione di Openmp -> segmentation fault quando si usa >1 thread
 - [ ] domanda 5: scalasca su differenti topologie e fare grafico per vedere ottimizzazione
     - [ ] strong scaling
         - [x] hybrid
