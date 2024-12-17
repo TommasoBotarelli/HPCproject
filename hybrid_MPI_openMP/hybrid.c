@@ -589,10 +589,10 @@ int main(int argc, char **argv)
       char str[10];
       sprintf(str, "0%d_0%d_", coords[0], coords[1]);
 
-      char* filename_eta = strcat(str, param.output_eta_filename);
+      //char* filename_eta = strcat(str, param.output_eta_filename);
 
       // TODO: togliere ghost cell prima di stampare
-      write_data_vtk_mpi(&eta, "water elevation", filename_eta, n, start_i, start_j, coords);
+      //write_data_vtk_mpi(&eta, "water elevation", filename_eta, n, start_i, start_j, coords);
       //write_data_vtk(&u, "x velocity", param.output_u_filename, n);
       //write_data_vtk(&v, "y velocity", param.output_v_filename, n);
     }
