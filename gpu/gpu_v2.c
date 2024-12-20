@@ -391,6 +391,8 @@ int main(int argc, char **argv)
 
 
   init_data(&h_interp_v, v.nx, v.ny, param.dx, param.dy, 0.);
+  //#pragma omp target teams distribute parallel for map(to:h) map(to:h.values[0:h.nx*h.ny]) map(tofrom:h_interp_v) map(tofrom:h_interp_v.values[0:h_interp_v.nx*h_interp_v.ny])
+  //#pragma omp target teams distribute parallel for map(to:p_h[0:1],p_h->values[0:p_h->nx*p_h->ny]) map(tofrom:p_h_interp_v->values[0:p_h_interp_v->nx*p_h_interp_v->ny],p_h_interp_v[0:1])
   #pragma omp target teams distribute parallel for \
                   map(to:p_h[0:1], p_h->nx, p_h->ny, p_h->dx, p_h->dy, p_h->values[0:p_h->nx*p_h->ny]) \
                   map(tofrom: p_h_interp_v[0:1], p_h_interp_v->nx, p_h_interp_v->ny, p_h_interp_v->dx, p_h_interp_v->dy, p_h_interp_v->values[0:p_h_interp_v->nx*p_h_interp_v->ny])
@@ -407,7 +409,9 @@ int main(int argc, char **argv)
 
   double start = GET_TIME();
 
-  #pragma omp target data map(to:p_h_interp_v[0:1], p_h_interp_v->values[0:p_h_interp_v->nx*p_h_interp_v->ny], p_h_interp_u[0:1], p_h_interp_u->values[0:p_h_interp_u->nx*p_h_interp_u->ny]) 
+  #pragma omp target data map(to:p_h_interp_v[0:1], p_h_interp_v->values[0:p_h_interp_v->nx*p_h_interp_v->ny], p_h_interp_u[0:1], p_h_interp_u->values[0:p_h_interp_u->nx*p_h_interp_u->ny]) \
+                map(tofrom :p_eta[0:1], p_eta->nx, p_eta->ny, p_eta->values[0:p_eta->nx*p_eta->ny]) \
+                map(tofrom :p_u[0:1], p_v[0:1], p_u->nx, p_u->ny, p_v->nx, p_v->ny, p_u->values[0:p_u->nx*p_u->ny],p_v->values[0:p_v->nx*p_v->ny])
   for(int n = 0; n < nt; n++) {
 
     if(n && (n % (nt / 10)) == 0) {
@@ -455,8 +459,7 @@ int main(int argc, char **argv)
     }
 
     // update eta
-    #pragma omp target teams distribute parallel for collapse(2)  map(tofrom:p_eta[0:1], p_eta->nx, p_eta->ny, p_eta->values[0:p_eta->nx*p_eta->ny]) \
-           map(to:p_u[0:1], p_v[0:1], p_u->nx, p_u->ny, p_v->nx, p_v->ny, p_u->values[0:p_u->nx*p_u->ny],p_v->values[0:p_v->nx*p_v->ny])
+    #pragma omp target teams distribute parallel for collapse(2)
     for(int j = 0; j < ny ; j++) {
       for(int i = 0; i < nx; i++) {
 
@@ -474,7 +477,6 @@ int main(int argc, char **argv)
         
         
         SET(p_eta, i, j, eta_ij);
-        //eta.values[eta.nx * j + i] = eta_ij;
       }
     }
 
@@ -485,8 +487,7 @@ int main(int argc, char **argv)
     double one_minus_c2 = 1.0 - param.dt * param.gamma;
 
     // update u and v
-    #pragma omp target teams distribute parallel for collapse(2) map(to :p_eta[0:1], p_eta->nx, p_eta->ny, p_eta->values[0:p_eta->nx*p_eta->ny]) \
-              map(tofrom :p_u[0:1], p_v[0:1], p_u->nx, p_u->ny, p_v->nx, p_v->ny, p_u->values[0:p_u->nx*p_u->ny],p_v->values[0:p_v->nx*p_v->ny])
+    #pragma omp target teams distribute parallel for collapse(2)
     for(int j = 0; j < ny; j++) {
       for(int i = 0; i < nx; i++) {
         double eta_ij = GET(p_eta, i, j);
@@ -498,13 +499,13 @@ int main(int argc, char **argv)
           - c1_dy * (eta_ij - eta_ijm);
         SET(p_u, i, j, u_ij);
         SET(p_v, i, j, v_ij);
-        //u.values[u.nx * j + i] = u_ij;
-        //v.values[v.nx * j + i] = v_ij;
         
       }
     }
 
   }
+
+
 
   //write_manifest_vtk("water elevation", param.output_eta_filename,
   //                   param.dt, nt, param.sampling_rate);
