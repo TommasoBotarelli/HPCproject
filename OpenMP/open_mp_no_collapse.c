@@ -348,7 +348,7 @@ int main(int argc, char **argv)
 
   init_data(&h_interp_u, u.nx, u.ny, param.dx, param.dy, 0.);
 
-  #pragma omp parallel for collapse(2)
+  #pragma omp parallel for  
   for(int j = 0; j < u.ny ; ++j) {
     for(int i = 0; i < u.nx; ++i) {
       double x = i * param.dx;
@@ -361,7 +361,7 @@ int main(int argc, char **argv)
 
   init_data(&h_interp_v, v.nx, v.ny, param.dx, param.dy, 0.);
 
-  #pragma omp parallel for collapse(2)
+  #pragma omp parallel for  
   for(int j = 0; j < v.ny; ++j) {
     for(int i = 0; i < v.nx ; ++i) {
       double x = ((double)i + 0.5) * param.dx;
@@ -421,7 +421,7 @@ int main(int argc, char **argv)
     }
 
     // update eta
-    #pragma omp parallel for collapse(2)
+    #pragma omp parallel for  
     for(int j = 0; j < ny ; ++j) {
       for(int i = 0; i < nx; ++i) {
 
@@ -449,7 +449,7 @@ int main(int argc, char **argv)
     double one_minus_c2 = 1.0 - param.dt * param.gamma;
 
     // update u and v
-    #pragma omp parallel for collapse(2)
+    #pragma omp parallel for  
     for(int j = 0; j < ny; ++j) {
       for(int i = 0; i < nx; ++i) {
         double eta_ij = GET(&eta, i, j);
