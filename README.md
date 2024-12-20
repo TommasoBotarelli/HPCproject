@@ -18,6 +18,7 @@
     - [ ] no collapse -> da ricompilare con ottimizzazione
 - [x] domanda 7
 - [ ] domande 8 e 9: fare scalasca su tutte le configurazioni e riportare su Excel
+- [ ] per togliersi tutti i dubbi vedere che succede ai risultati lanciati con un solo processo mpi. Se sono corretti allora effetivamente i tempi registrati sono ok.
 
 
 # UPDATEs
