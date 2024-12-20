@@ -775,6 +775,10 @@ int main(int argc, char **argv)
     
   }
 
+  double time = GET_TIME() - start;
+  printf("\nDone: %g seconds (%g MUpdates/s)\n", time,
+         1e-6 * (double)eta.nx * (double)eta.ny * (double)nt / time);
+
   free_data(&h_interp_u);
   free_data(&h_interp_v);
   free_data(&eta);

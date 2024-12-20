@@ -66,10 +66,10 @@ struct ghost_cells {
 };
 
 void init_ghost_cells(struct ghost_cells *ghost_cells, int nx, int ny){
-  printf("nx = %d\nny = %d\n", nx, ny);
+  //printf("nx = %d\nny = %d\n", nx, ny);
   ghost_cells->nx = nx;
   ghost_cells->ny = ny;
-  printf("ghost cell.nx = %d\nghost cell.ny = %d\n", ghost_cells->nx, ghost_cells->ny);
+  //printf("ghost cell.nx = %d\nghost cell.ny = %d\n", ghost_cells->nx, ghost_cells->ny);
   ghost_cells->up = (double*)malloc(nx * sizeof(double));  
   ghost_cells->down = (double*)malloc(nx * sizeof(double));
   ghost_cells->left = (double*)malloc(ny * sizeof(double));
@@ -542,8 +542,6 @@ int main(int argc, char **argv)
     }
   }
 
-  printf("################ Rank %d ################\nsizes: %d, %d, %d, %d, %d, %d\neta: nx, ny, dx, dy = %d, %d, %f, %f\nu: nx, ny, dx, dy = %d, %d, %f, %f\nv: nx, ny, dx, dy = %d, %d, %f, %f\n", rank, start_i, end_i, start_j, end_j, mysize_i, mysize_j, eta.nx, eta.ny, eta.dx, eta.dy,u.nx, u.ny, u.dx, u.dy,v.nx, v.ny, v.dx, v.dy);
-
   struct ghost_cells ghost_cells_in;
   struct ghost_cells ghost_cells_out;
 
@@ -556,10 +554,10 @@ int main(int argc, char **argv)
   MPI_Cart_shift(cart_comm, 1, 1, 
                   &neighbors[LEFT], &neighbors[RIGHT]);
 
-  printf("Rank = %4d - Coords = (%3d, %3d)"
-         " - Neighbors (up, down, left, right) = (%3d, %3d, %3d, %3d)\n",
-            rank, coords[0], coords[1], 
-            neighbors[UP], neighbors[DOWN], neighbors[LEFT], neighbors[RIGHT]);
+  //printf("Rank = %4d - Coords = (%3d, %3d)"
+  //       " - Neighbors (up, down, left, right) = (%3d, %3d, %3d, %3d)\n",
+  //          rank, coords[0], coords[1], 
+  //          neighbors[UP], neighbors[DOWN], neighbors[LEFT], neighbors[RIGHT]);
 
   double start = GET_TIME();
 
@@ -675,14 +673,14 @@ int main(int argc, char **argv)
     MPI_Isend(ghost_cells_out.left, mysize_j, MPI_DOUBLE, neighbors[LEFT], 2, cart_comm, &requests_send[2]);
     MPI_Isend(ghost_cells_out.right, mysize_j, MPI_DOUBLE, neighbors[RIGHT], 3, cart_comm, &requests_send[3]);
     
-    printf("################ Rank %d ################\nISend:\nUP (from: %d) e DOWN (from: %d) -> size = %d (mysize_i = %d)\nLEFT (from: %d) e RIGHT (from: %d) -> size = %d (mysize_j = %d)\n", rank, neighbors[UP], neighbors[DOWN], ghost_cells_out.nx, mysize_i, neighbors[LEFT], neighbors[RIGHT], ghost_cells_out.ny, mysize_j);
+    //printf("################ Rank %d ################\nISend:\nUP (from: %d) e DOWN (from: %d) -> size = %d (mysize_i = %d)\nLEFT (from: %d) e RIGHT (from: %d) -> size = %d (mysize_j = %d)\n", rank, neighbors[UP], neighbors[DOWN], ghost_cells_out.nx, mysize_i, neighbors[LEFT], neighbors[RIGHT], ghost_cells_out.ny, mysize_j);
 
     MPI_Irecv(ghost_cells_in.up, mysize_i, MPI_DOUBLE, neighbors[UP], 1, cart_comm, &requests_recv[0]);
     MPI_Irecv(ghost_cells_in.down, mysize_i, MPI_DOUBLE, neighbors[DOWN], 0, cart_comm, &requests_recv[1]);
     MPI_Irecv(ghost_cells_in.left, mysize_j, MPI_DOUBLE, neighbors[LEFT], 3, cart_comm, &requests_recv[2]);
     MPI_Irecv(ghost_cells_in.right, mysize_j, MPI_DOUBLE, neighbors[RIGHT], 2, cart_comm, &requests_recv[3]);
 
-    printf("################ Rank %d ################\nIRecv:\nUP (from: %d) e DOWN (from: %d) -> size = %d (mysize_i = %d)\nLEFT (from: %d) e RIGHT (from: %d) -> size = %d (mysize_j = %d)\n", rank, neighbors[UP], neighbors[DOWN], ghost_cells_in.nx, mysize_i, neighbors[LEFT], neighbors[RIGHT], ghost_cells_in.ny, mysize_j);
+    //printf("################ Rank %d ################\nIRecv:\nUP (from: %d) e DOWN (from: %d) -> size = %d (mysize_i = %d)\nLEFT (from: %d) e RIGHT (from: %d) -> size = %d (mysize_j = %d)\n", rank, neighbors[UP], neighbors[DOWN], ghost_cells_in.nx, mysize_i, neighbors[LEFT], neighbors[RIGHT], ghost_cells_in.ny, mysize_j);
 
     double c1_dx = param.dt * param.g / param.dx;
     double c1_dy = param.dt * param.g / param.dy;
@@ -712,11 +710,11 @@ int main(int argc, char **argv)
     }
 
     
-    printf("################ Rank %d ################\nHo aggioranto u e v... Adesso aspetto\n", rank);
+    //printf("################ Rank %d ################\nHo aggioranto u e v... Adesso aspetto\n", rank);
 
     MPI_Waitall(4, requests_recv, MPI_STATUSES_IGNORE);
 
-    printf("################ Rank %d ################\nHo ricevuto i messaggi\n", rank);
+    //printf("################ Rank %d ################\nHo ricevuto i messaggi\n", rank);
     
     // update u e v rimanenti
 
@@ -763,13 +761,17 @@ int main(int argc, char **argv)
       }
     }
 
-    printf("################ Rank %d ################\nHo aggiornato anche i rimnenti\n", rank);
+    //printf("################ Rank %d ################\nHo aggiornato anche i rimnenti\n", rank);
 
     MPI_Waitall(4, requests_send, MPI_STATUSES_IGNORE);
 
-    printf("################ Rank %d ################\nPasso al successivo step\n", rank);
+    //printf("################ Rank %d ################\nPasso al successivo step\n", rank);
     
   }
+
+  double time = GET_TIME() - start;
+  printf("\nDone: %g seconds (%g MUpdates/s)\n", time,
+         1e-6 * (double)eta.nx * (double)eta.ny * (double)nt / time);
 
   free_data(&h_interp_u);
   free_data(&h_interp_v);

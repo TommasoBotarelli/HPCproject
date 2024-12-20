@@ -4,6 +4,8 @@
 #include <math.h>
 #include <string.h>
 #include <time.h>
+#include <mpi.h>
+#include <omp.h>
 
 #if defined(_OPENMP)
 #include <omp.h>
