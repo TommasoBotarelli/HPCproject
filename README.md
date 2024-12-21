@@ -9,10 +9,10 @@
         - [x] hybrid
         - [x] mpi
         - [x] OpenMp -> OK
-    - [ ] weak scaling
-        - [ ] hybrid
-        - [ ] mpi
-        - [ ] OpenMp
+    - [x] weak scaling
+        - [x] hybrid
+        - [x] mpi
+        - [x] OpenMp
 - [ ] domanda 6: scalasca su collapse e non collapse
     - [x] collapse -> stessi risultati di openMP
     - [ ] no collapse -> da ricompilare con ottimizzazione
@@ -44,3 +44,21 @@ Ricontrollando sembrerebbe che le impostazioni del job con la quale sono stati l
 Ho girato senza esclusività MPI e sembra che con un solo nodo comunque faccia tempi molto migliori. Questo continua a non tornarmi molto...
 
 In ogni caso ho aggiunto i risultati con ottimizzazione dello strong scaling nella cartella results.
+
+## 21/12
+
+Fatti i test per weak scaling. I risultati sembrano avere senso. Lo scaling è stato effettuato nel seguente modo:
+
+| n ranks | dx    | dy    | total points             |
+|---------|-------|-------|--------------------------|
+| 1       | 5     | 5     | $800\cdot800=640000$     |
+| 2       | 2.5   | 5     | $1600\cdot800=1280000$   |
+| 4       | 2.5   | 2.5   | $1600\cdot1600=2560000$  |
+| 8       | 1.25  | 2.5   | $3200\cdot1600=5120000$  |
+| 16      | 1.25  | 1.25  | $3200\cdot3200=10240000$ |
+| 32      | 0.625 | 1.25  | $6400\cdot3200=20480000$ |
+| 64      | 0.625 | 0.625 | $6400\cdot6400=40960000$ |
+
+Non è stato controllato che effettivamente i risultati siano stabili (dal momento che sono stati mantenuti lo stesso numero di punti nello spazio di sempre e questo potebbe comportare per _dx, dy_ piccoli instabilità).
+
+Per i risultati del tempo di computazione ho messo tutto nella cartella results.
