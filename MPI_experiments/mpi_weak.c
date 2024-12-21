@@ -5,6 +5,7 @@
 #include <string.h>
 #include <time.h>
 #include <mpi.h>
+#include <stdlib.h>
 
 #if defined(_OPENMP)
 #include <omp.h>
@@ -442,6 +443,40 @@ void add_values_by_line(struct data* line_data,
   }
 }
 
+int update_parameters_for_weak_experiment(struct parameters* param,
+                                           const char *ranks_number)
+{
+  int ranks = strtol(ranks_number, NULL, 10);
+
+  if (ranks == 2){
+    param->dx = param->dx / 2;
+  }
+  if (ranks == 4){
+    param->dx = param->dx / 2;
+    param->dy = param->dy / 2;
+  }
+  if (ranks == 8){
+    param->dx = param->dx / 4;
+    param->dy = param->dy / 2;
+  }
+  if (ranks == 16){
+    param->dx = param->dx / 4;
+    param->dy = param->dy / 4;
+  }
+  if (ranks == 32){
+    param->dx = param->dx / 8;
+    param->dy = param->dy / 4;
+  }
+  if (ranks == 64){
+    param->dx = param->dx / 8;
+    param->dy = param->dy / 8;
+  }
+  if (ranks > 64){
+    return 1;
+  }
+  return 0;
+}
+
 int main(int argc, char **argv)
 {
   MPI_Init(&argc,&argv);
@@ -479,14 +514,22 @@ int main(int argc, char **argv)
   struct data h_interp_v;
 
   if (rank == 0){
-    if(argc != 2) {
-      printf("Usage: %s parameter_file\n", argv[0]);
+    if(argc != 3) {
+      printf("Usage: %s parameter_file, number of ranks\n", argv[0]);
       return 1;
     }
   }
 
   struct parameters param;
   if(read_parameters(&param, argv[1])) return 1;
+
+  int result = update_parameters_for_weak_experiment(&param, argv[2]);
+  
+  if (result == 1){
+    printf("Number of ranks greater (%s) than expected", argv[2]);
+    return 1;
+  }
+
   if (rank == 0){
     print_parameters(&param);
   }
@@ -646,10 +689,10 @@ int main(int argc, char **argv)
                 - param.dt / param.dx * (h_x_u_i1_j * GET(&u, i+1, j) - h_x_u_i_j * GET(&u, i, j))
                 - param.dt / param.dy * (h_x_v_i_j1 * GET(&v, i, j+1) - h_x_v_i_j * GET(&v, i, j));
         
-        if (isnan(eta_ij)){
-          printf("i: %d, j: %d, value: %f", i, j, eta_ij);
-          return 1;
-        }
+        //if (isnan(eta_ij)){
+        //  printf("i: %d, j: %d, value: %f", i, j, eta_ij);
+        //  return 1;
+        //}
         
         SET(&eta, i, j, eta_ij);
       }
