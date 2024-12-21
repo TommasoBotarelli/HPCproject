@@ -62,3 +62,5 @@ Fatti i test per weak scaling. I risultati sembrano avere senso. Lo scaling è s
 Non è stato controllato che effettivamente i risultati siano stabili (dal momento che sono stati mantenuti lo stesso numero di punti nello spazio di sempre e questo potebbe comportare per _dx, dy_ piccoli instabilità).
 
 Per i risultati del tempo di computazione ho messo tutto nella cartella results.
+
+Ho fatto anche la weak e lo strong scaling per il caso di openmp senza il collapse. I risultati li devo ancora mettere.
