@@ -13,12 +13,17 @@
         - [x] hybrid
         - [x] mpi
         - [x] OpenMp
-- [ ] domanda 6: scalasca su collapse e non collapse
+- [x] domanda 6: scalasca su collapse e non collapse
     - [x] collapse -> stessi risultati di openMP
-    - [ ] no collapse -> da ricompilare con ottimizzazione
+    - [x] no collapse -> da ricompilare con ottimizzazione
 - [x] domanda 7
 - [ ] domande 8 e 9: fare scalasca su tutte le configurazioni e riportare su Excel
 - [x] per togliersi tutti i dubbi vedere che succede ai risultati lanciati con un solo processo mpi. Se sono corretti allora effetivamente i tempi registrati sono ok. -> Update: sono corretti cioè anche con un solo processo si genera il file giusto (grandezza 4000x4000)
+- [ ] ultima domanda batimetria
+    - [x] trovare dati
+    - [ ] conversione nel formato che ci serve a noi
+    - [ ] simulazione
+    - [ ] risultati
 
 
 # UPDATEs
@@ -64,3 +69,7 @@ Non è stato controllato che effettivamente i risultati siano stabili (dal momen
 Per i risultati del tempo di computazione ho messo tutto nella cartella results.
 
 Ho fatto anche la weak e lo strong scaling per il caso di openmp senza il collapse. I risultati li devo ancora mettere.
+
+## 03/01
+
+Ho aggiuto i risultati per lo scaling con no collapse.
