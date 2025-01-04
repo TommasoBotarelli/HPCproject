@@ -21,6 +21,7 @@
 - [x] per togliersi tutti i dubbi vedere che succede ai risultati lanciati con un solo processo mpi. Se sono corretti allora effetivamente i tempi registrati sono ok. -> Update: sono corretti cioè anche con un solo processo si genera il file giusto (grandezza 4000x4000)
 - [ ] ultima domanda batimetria
     - [x] trovare dati
+    - [ ] descrizione del dataset (nx, ny, dx, dy)
     - [ ] conversione nel formato che ci serve a noi
     - [ ] simulazione
     - [ ] risultati
@@ -73,3 +74,23 @@ Ho fatto anche la weak e lo strong scaling per il caso di openmp senza il collap
 ## 03/01
 
 Ho aggiuto i risultati per lo scaling con no collapse.
+
+## 04/01
+
+I parametri del file di batimetria semplice che abbiamo sempre usato sono i seguenti:
+
+| name     | value |
+|----------|-------|
+| nx       | 100   |
+| ny       | 100   |
+| dx       | 40.0  |
+| dy       | 40.0  |
+
+Dopo averci pensato un pò penso che la meglio cosa sia prendere un dataset della batimetria delle terre non emerse e mettere come condizione di riflesso totale i contorni delle terre emerse. Per questo motivo ho usato il sito [emodnet.ec.europa.eu](https://emodnet.ec.europa.eu/geoviewer/#) che permette di recuperare i dati della batimetria. Continuerei ad usare un dataset con la stessa shape (non numericamente ma almeno che sia un quadrato) giusto per non avere problemi nella parallelizzazione. Si può usare un pò più di punti. 
+
+Ho recuperato quindi i dati di batimetria vicino all'isola di Pianosa. Ho ripulito il dataset e creato per il momento un file csv contenente i dati della batimetria. La shape dell'array è $150\cdot 150$.
+
+Tramite questo [calcolatore](https://opendem.info/arc2meters.html) si può calcolare i due parametri _dx_ e _dy_ prendendo una latitudine di riferimento per l'intero dataset (assumendo quindi una griglia regolare anche se nella realtà non lo è). 
+
+Per il momento ho fatto uno zip in cui ho messo i dati raw ottenuti dal sito e poi i miei dati processati nell'array $150\cdot 150$.
+
