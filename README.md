@@ -21,7 +21,7 @@
 - [x] per togliersi tutti i dubbi vedere che succede ai risultati lanciati con un solo processo mpi. Se sono corretti allora effetivamente i tempi registrati sono ok. -> Update: sono corretti cioè anche con un solo processo si genera il file giusto (grandezza 4000x4000)
 - [ ] ultima domanda batimetria
     - [x] trovare dati
-    - [ ] descrizione del dataset (nx, ny, dx, dy)
+    - [x] descrizione del dataset (nx, ny, dx, dy)
     - [ ] conversione nel formato che ci serve a noi
     - [ ] simulazione
     - [ ] risultati
@@ -94,3 +94,34 @@ Tramite questo [calcolatore](https://opendem.info/arc2meters.html) si può calco
 
 Per il momento ho fatto uno zip in cui ho messo i dati raw ottenuti dal sito e poi i miei dati processati nell'array $150\cdot 150$.
 
+## 05/01
+
+Ho calcolato alcuni parametri necessari per la descrizione del dataset della batimetria:
+
+- A partire dal dataset _raw_ ho estratto un quadrato di $150$ punti in entrambe le direzioni ($150\cdot 150 = 22500$ punti);
+- Le estremità del quadrato sono le seguenti:
+
+    | indice         | latitude       | longitude |
+    |----------------|----------------|-----------|
+    | $[0, 0]$       | 42.6651        | 9.9724    |
+    | $[0, 150]$     | 42.6651        | 10.1286   |
+    | $[150, 0]$     | 42.5089        | 9.9724    |
+    | $[150, 150]$   | 42.5089        | 10.1286   |
+
+- A partire da queste coordinate in gradi si può effettuare la conversione per ottenere il valore di _dx_ e _dy_ in metri. Per prima cosa si calcola la differenza in gradi fra le coordinate di inizio e di fine per la longitude e la latitude. Da questo si calcola _dx_ e _dy_ (in gradi) prendendo la differenza e dividendola per _n_ numero di punti lungo l'asse corrispondente (nel nostro caso 150 per tutte e due le direzioni):
+
+    |                           | latitude       | longitude |
+    |---------------------------|----------------|-----------|
+    | absolute difference       | 0.1562         | 0.1563    |
+    | step value (in degree)    | 0.0010417      | 0.0010417 |
+
+    Si può assumere quindi che lo step sia lo stesso lungo entrambi gli assi e costante. Quindi si può calcolare la lunghezza dello step in metri usando il [calcolatore](https://opendem.info/arc2meters.html) considerando che $0.0010417° = 3.75012$ _seconds_ e che la latitude media (si assume che la griglia sia costante cosa che in realtà non sarebbe data la differenza di latitude ma che in questo caso è minima) è $42.587$. Otteniamo un valore di $85.22374$ _m_.
+
+Riassumendo abbiamo le seguenti caratteristiche per il dataset:
+
+| name     | value     |
+|----------|-----------|
+| nx       | 150       |
+| ny       | 150       |
+| dx       | 85.22374  |
+| dy       | 85.22374  |
