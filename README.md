@@ -22,8 +22,9 @@
 - [ ] ultima domanda batimetria
     - [x] trovare dati
     - [x] descrizione del dataset (nx, ny, dx, dy)
-    - [ ] conversione nel formato che ci serve a noi
+    - [x] conversione nel formato che ci serve a noi
     - [ ] simulazione
+    - [ ] togliere la boundary condition che riflette il lato destro
     - [ ] risultati
 
 
@@ -119,9 +120,14 @@ Ho calcolato alcuni parametri necessari per la descrizione del dataset della bat
 
 Riassumendo abbiamo le seguenti caratteristiche per il dataset:
 
-| name     | value     |
-|----------|-----------|
-| nx       | 150       |
-| ny       | 150       |
-| dx       | 85.22374  |
-| dy       | 85.22374  |
+| name     | value                      |
+|----------|----------------------------|
+| nx       | 150                        |
+| ny       | 150                        |
+| dx       | $85.22374 \approx 85.224$  |
+| dy       | $85.22374 \approx 85.224$  |
+
+
+## 06/01
+
+Ho aggiustato l'eseguibile _pianosa.c_ per fare in modo che i contorni dell'isola fossero riflettenti. Ho runnato e tutto va bene ma nella soluzione ci sono alcuni valori abbastanza alti $\approx 300$ che sembrano strani. La simulazione sembra realistica.
