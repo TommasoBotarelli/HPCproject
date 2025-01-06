@@ -1,0 +1,2 @@
+Il file pianosa_bathymetry_nan.dat è quello da usare per effettuare la simulazione.
+Il formato del file è pronto per l'esecuzione.
