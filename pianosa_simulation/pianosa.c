@@ -416,7 +416,7 @@ void save_coordinate(struct data *data, const char *filename){
     fclose(f);
 }
 
-void save_bathymetry(struct data *data, char *filename){
+void save_data(struct data *data, char *filename){
   FILE* f = fopen(filename, "w");
 
   fprintf(f, "i;j;value\n");
@@ -503,8 +503,8 @@ int main(int argc, char **argv)
     }
   }
 
-  save_bathymetry(&h_interp_u, "h_interp_u.csv");
-  save_bathymetry(&h_interp_v, "h_interp_v.csv");
+  save_data(&h_interp_u, "h_interp_u.csv");
+  save_data(&h_interp_v, "h_interp_v.csv");
 
   double start = GET_TIME();
 
@@ -528,6 +528,7 @@ int main(int argc, char **argv)
     double t = n * param.dt;
     if(param.source_type == 1) {
       // sinusoidal elevation on left side of the square
+      // reflection of the waves on the island
       double A = 5;
       double f = 1. / 20.;
 
@@ -536,12 +537,11 @@ int main(int argc, char **argv)
         SET(&eta, 0, j, a_sin_value); 
       }
 
-      // reflect waves condition on the island
       for(int j = 0; j < u.ny ; j++) {
         for(int i = 0; i < u.nx; i++) {
           if (isnan(GET(&h_interp_u_nan, i, j))){
             SET(&u, i, j, 0.0);
-          }  
+          }
         }
       }
 
@@ -551,6 +551,17 @@ int main(int argc, char **argv)
             SET(&v, i, j, 0.0);
           }  
         }
+      }
+    }
+    else if(param.source_type == 2) {
+      // sinusoidal elevation on left side of the square
+      // no reflection on the island
+      double A = 5;
+      double f = 1. / 20.;
+
+      double a_sin_value = A * sin(2 * M_PI * f * t);
+      for(int j = 0; j < ny; j++) {
+        SET(&eta, 0, j, a_sin_value); 
       }
     }
     else {
@@ -598,6 +609,15 @@ int main(int argc, char **argv)
       }
     }
   }
+
+  for(int i = 0; i < u.ny; i++){
+    SET(&u, u.nx-1, i, GET(&u, u.nx-2, i));
+  }
+
+  for(int i = 0; i < v.nx; i++){
+    SET(&v, i, v.ny-1, GET(&v, i, v.ny-2));
+  }
+
 
   //write_manifest_vtk("water elevation", param.output_eta_filename,
   //                  param.dt, nt, param.sampling_rate);
