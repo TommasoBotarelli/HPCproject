@@ -608,15 +608,17 @@ int main(int argc, char **argv)
         SET(&v, i, j, v_ij);
       }
     }
+    
+    for(int i = 0; i < u.ny; i++){
+      SET(&u, u.nx-1, i, GET(&u, u.nx-2, i));
+    }
+
+    for(int i = 0; i < v.nx; i++){
+      SET(&v, i, v.ny-1, GET(&v, i, v.ny-2));
+    }
+
   }
 
-  for(int i = 0; i < u.ny; i++){
-    SET(&u, u.nx-1, i, GET(&u, u.nx-2, i));
-  }
-
-  for(int i = 0; i < v.nx; i++){
-    SET(&v, i, v.ny-1, GET(&v, i, v.ny-2));
-  }
 
 
   //write_manifest_vtk("water elevation", param.output_eta_filename,

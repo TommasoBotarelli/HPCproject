@@ -102,21 +102,28 @@ Ho calcolato alcuni parametri necessari per la descrizione del dataset della bat
 - A partire dal dataset _raw_ ho estratto un quadrato di $150$ punti in entrambe le direzioni ($150\cdot 150 = 22500$ punti);
 - Le estremità del quadrato sono le seguenti:
 
-    | indice         | latitude       | longitude |
+    | index         | latitude       | longitude |
     |----------------|----------------|-----------|
     | $[0, 0]$       | 42.6651        | 9.9724    |
-    | $[0, 150]$     | 42.6651        | 10.1286   |
-    | $[150, 0]$     | 42.5089        | 9.9724    |
-    | $[150, 150]$   | 42.5089        | 10.1286   |
+    | $[0, 149]$     | 42.6651        | 10.1286   |
+    | $[149, 0]$     | 42.5089        | 9.9724    |
+    | $[149, 149]$   | 42.5089        | 10.1286   |
 
 - A partire da queste coordinate in gradi si può effettuare la conversione per ottenere il valore di _dx_ e _dy_ in metri. Per prima cosa si calcola la differenza in gradi fra le coordinate di inizio e di fine per la longitude e la latitude. Da questo si calcola _dx_ e _dy_ (in gradi) prendendo la differenza e dividendola per _n_ numero di punti lungo l'asse corrispondente (nel nostro caso 150 per tutte e due le direzioni):
 
-    |                           | latitude       | longitude |
-    |---------------------------|----------------|-----------|
-    | absolute difference       | 0.1562         | 0.1563    |
-    | step value (in degree)    | 0.0010417      | 0.0010417 |
+    |                                    | latitude       | longitude |
+    |------------------------------------|----------------|-----------|
+    | absolute difference                | 0.1562         | 0.1563    |
+    | discretization step (in degree)    | 0.0010417      | 0.0010417 |
 
     Si può assumere quindi che lo step sia lo stesso lungo entrambi gli assi e costante. Quindi si può calcolare la lunghezza dello step in metri usando il [calcolatore](https://opendem.info/arc2meters.html) considerando che $0.0010417° = 3.75012$ _seconds_ e che la latitude media (si assume che la griglia sia costante cosa che in realtà non sarebbe data la differenza di latitude ma che in questo caso è minima) è $42.587$. Otteniamo un valore di $85.22374$ _m_.
+
+    |                                    | latitude       | longitude |
+    |------------------------------------|----------------|-----------|
+    | absolute difference between max and min (in degree)                | $0.1562   $      | $0.1563   $ |
+    | discretization step (in degree)    | $0.0010417$      | $0.0010417$ |
+    | discretization step (in arc seconds)                        | $3.75012  $      | $3.75012  $ |
+    | discretization step based on average latitude (in meters)| $85.22\approx 85$ | $85.22\approx 85$ |
 
 Riassumendo abbiamo le seguenti caratteristiche per il dataset:
 
@@ -124,8 +131,8 @@ Riassumendo abbiamo le seguenti caratteristiche per il dataset:
 |----------|----------------------------|
 | nx       | 150                        |
 | ny       | 150                        |
-| dx       | $85.22374 \approx 85.224$  |
-| dy       | $85.22374 \approx 85.224$  |
+| dx       | $85.22374 \approx 85$      |
+| dy       | $85.22374 \approx 85$      |
 
 
 ## 06/01
