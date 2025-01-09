@@ -4,8 +4,6 @@
 #include <math.h>
 #include <string.h>
 #include <time.h>
-#include <mpi.h>
-#include <omp.h>
 #include <stdlib.h>
 
 #if defined(_OPENMP)
@@ -446,12 +444,12 @@ int main(int argc, char **argv)
       // sinusoidal velocity on top boundary
 
       for(int j = 0; j < ny; j++) {
-        for(int i = 0; i < nx; i++) {
-          SET(&u, 0, j, 0.);
-          SET(&u, nx, j, 0.);
-          SET(&v, i, 0, 0.);
-          SET(&v, i, ny, A * sin(2 * M_PI * f * t));
-        }
+        SET(&u, 0, j, 0.);
+        SET(&u, nx, j, 0.);
+      }
+      for(int i = 0; i < nx; i++) {
+        SET(&v, i, 0, 0.);
+        SET(&v, i, ny, A * sin(2 * M_PI * f * t));
       }
     }
     else if(param.source_type == 2) {
