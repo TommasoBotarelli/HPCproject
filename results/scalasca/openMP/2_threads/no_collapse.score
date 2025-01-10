@@ -1,0 +1,34 @@
+
+Estimated aggregate size of event trace:                   32MB
+Estimated requirements for largest trace buffer (max_buf): 32MB
+Estimated memory requirements (SCOREP_TOTAL_MEMORY):       36MB
+(hint: When tracing set SCOREP_TOTAL_MEMORY=36MB to avoid intermediate flushes
+ or reduce requirements using USR regions filters.)
+
+flt     type max_buf[B]    visits time[s] time[%] time/visit[us]  region
+         ALL 32,887,309 1,329,627   11.08   100.0           8.33  ALL
+         USR 30,758,712 1,281,613    0.16     1.4           0.12  USR
+         OMP  2,128,532    48,012   10.86    98.0         226.25  OMP
+      SCOREP         41         1    0.00     0.0        2183.82  SCOREP
+         COM         24         1    0.06     0.5       58795.64  COM
+
+         USR 30,758,400 1,281,600    0.15     1.4           0.12  interpolate_data
+         OMP    680,000     8,000    0.00     0.0           0.52  ?$omp?parallel?@open_mp_no_collapse.c:424
+         OMP    680,000     8,000    0.00     0.0           0.40  ?$omp?parallel?@open_mp_no_collapse.c:452
+         OMP    192,000     8,000    6.45    58.2         805.87  ?$omp?for?@open_mp_no_collapse.c:424
+         OMP    192,000     8,000    0.05     0.4           6.12  ?$omp?implicit?barrier?@open_mp_no_collapse.c:443
+         OMP    192,000     8,000    4.12    37.2         514.93  ?$omp?for?@open_mp_no_collapse.c:452
+         OMP    192,000     8,000    0.10     0.9          12.25  ?$omp?implicit?barrier?@open_mp_no_collapse.c:465
+         OMP        170         2    0.00     0.0           2.05  ?$omp?parallel?@open_mp_no_collapse.c:351
+         OMP        170         2    0.00     0.0           0.61  ?$omp?parallel?@open_mp_no_collapse.c:364
+         USR        120         5    0.00     0.0         185.50  free_data
+         USR        120         5    0.00     0.0         943.06  init_data
+         OMP         48         2    0.07     0.6       35632.04  ?$omp?for?@open_mp_no_collapse.c:351
+         OMP         48         2    0.00     0.0         472.14  ?$omp?implicit?barrier?@open_mp_no_collapse.c:360
+         OMP         48         2    0.07     0.6       34837.48  ?$omp?for?@open_mp_no_collapse.c:364
+         OMP         48         2    0.00     0.0          71.65  ?$omp?implicit?barrier?@open_mp_no_collapse.c:373
+      SCOREP         41         1    0.00     0.0        2183.82  openmp_no_collapse_scalasca
+         COM         24         1    0.06     0.5       58795.64  main
+         USR         24         1    0.00     0.0         156.69  read_data
+         USR         24         1    0.00     0.0          12.85  print_parameters
+         USR         24         1    0.00     0.0         142.80  read_parameters

@@ -4,7 +4,7 @@
 - [ ] domanda 10: codice per GPU
 - [x] fare grafico per arithmetic analysis
 - [x] implementazione di Openmp
-- [ ] domanda 5: scalasca su differenti topologie e fare grafico per vedere ottimizzazione
+- [x] domanda 5: scalasca su differenti topologie e fare grafico per vedere ottimizzazione
     - [x] strong scaling
         - [x] hybrid
         - [x] mpi
@@ -17,15 +17,14 @@
     - [x] collapse -> stessi risultati di openMP
     - [x] no collapse -> da ricompilare con ottimizzazione
 - [x] domanda 7
-- [ ] domande 8 e 9: fare scalasca su tutte le configurazioni e riportare su Excel
-- [x] per togliersi tutti i dubbi vedere che succede ai risultati lanciati con un solo processo mpi. Se sono corretti allora effetivamente i tempi registrati sono ok. -> Update: sono corretti cioè anche con un solo processo si genera il file giusto (grandezza 4000x4000)
+- [ ] Scalasca per spiegare risultati del weak e strong scaling
 - [ ] ultima domanda batimetria
     - [x] trovare dati
     - [x] descrizione del dataset (nx, ny, dx, dy)
     - [x] conversione nel formato che ci serve a noi
-    - [ ] simulazione
-    - [ ] togliere la boundary condition che riflette il lato destro
-    - [ ] risultati
+    - [x] simulazione
+    - [x] aggiungere altri tipi di source
+    - [ ] scaricare risultati e fare video delle 3 source
 
 
 # UPDATEs

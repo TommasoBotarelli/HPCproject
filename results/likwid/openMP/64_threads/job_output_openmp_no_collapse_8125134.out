@@ -1,0 +1,330 @@
+--------------------------------------------------------------------------------
+CPU name:	AMD EPYC 7542 32-Core Processor                
+CPU type:	AMD K17 (Zen2) architecture
+CPU clock:	2.90 GHz
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 0 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 0 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 1 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 1 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 2 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 2 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 3 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 3 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 4 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 4 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 5 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 5 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 6 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 6 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 7 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 7 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 8 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 8 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 9 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 9 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 10 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 10 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 11 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 11 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 12 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 12 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 13 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 13 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 14 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 14 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 15 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 15 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 16 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 16 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 17 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 17 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 18 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 18 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 19 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 19 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 20 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 20 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 21 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 21 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 22 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 22 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 23 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 23 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 24 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 24 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 25 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 25 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 26 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 26 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 27 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 27 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 28 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 28 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 29 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 29 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 30 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 30 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 31 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 31 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 32 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 32 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 33 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 33 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 34 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 34 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 35 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 35 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 36 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 36 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 37 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 37 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 38 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 38 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 39 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 39 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 40 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 40 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 41 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 41 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 42 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 42 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 43 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 43 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 44 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 44 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 45 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 45 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 46 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 46 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 47 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 47 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 48 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 48 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 49 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 49 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 50 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 50 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 51 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 51 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 52 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 52 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 53 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 53 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 54 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 54 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 55 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 55 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 56 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 56 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 57 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 57 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 58 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 58 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 59 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 59 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 60 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 60 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 61 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 61 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 62 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 62 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event ACTUAL_CPU_CLOCK on CPU 63 failed: Permission denied
+ERROR - [./src/includes/perfmon_perfevent.h:perfmon_setupCountersThread_perfevent:869] Permission denied.
+Setup of event MAX_CPU_CLOCK on CPU 63 failed: Permission denied
+--------------------------------------------------------------------------------
+Parameters:
+ - grid spacing (dx, dy): 5 m, 5 m
+ - time step (dt): 0.05 s
+ - maximum time (max_t): 200 s
+ - gravitational acceleration (g): 9.81 m/s^2
+ - dissipation coefficient (gamma): 2e-05 1/s
+ - source type: 1
+ - sampling rate: 0
+ - input bathymetry (h) file: 'h_simple.dat'
+ - output elevation (eta) file: 'eta_simple'
+ - output velocity (u, v) files: 'u_simple', 'v_simple'
+h->dx = 40.000000
+h->dy = 40.000000
+ - grid size: 4000 m x 4000 m (800 x 800 = 640000 grid points)
+ - number of time steps: 4000
+Computing step 400/4000 (ETA: 0.436924 seconds)     Computing step 800/4000 (ETA: 0.385659 seconds)     Computing step 1200/4000 (ETA: 0.336928 seconds)     Computing step 1600/4000 (ETA: 0.288653 seconds)     Computing step 2000/4000 (ETA: 0.241112 seconds)     Computing step 2400/4000 (ETA: 0.19264 seconds)     Computing step 2800/4000 (ETA: 0.144361 seconds)     Computing step 3200/4000 (ETA: 0.0961891 seconds)     Computing step 3600/4000 (ETA: 0.0480548 seconds)     
+Done: 0.480294 seconds (5330.07 MUpdates/s)
+--------------------------------------------------------------------------------
+Group 1: CACHE
++------------------------+---------+------------+------------+------------+------------+------------+------------+------------+------------+------------+------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+
+|          Event         | Counter | HWThread 0 | HWThread 1 | HWThread 2 | HWThread 3 | HWThread 4 | HWThread 5 | HWThread 6 | HWThread 7 | HWThread 8 | HWThread 9 | HWThread 10 | HWThread 11 | HWThread 12 | HWThread 13 | HWThread 14 | HWThread 15 | HWThread 16 | HWThread 17 | HWThread 18 | HWThread 19 | HWThread 20 | HWThread 21 | HWThread 22 | HWThread 23 | HWThread 24 | HWThread 25 | HWThread 26 | HWThread 27 | HWThread 28 | HWThread 29 | HWThread 30 | HWThread 31 | HWThread 32 | HWThread 33 | HWThread 34 | HWThread 35 | HWThread 36 | HWThread 37 | HWThread 38 | HWThread 39 | HWThread 40 | HWThread 41 | HWThread 42 | HWThread 43 | HWThread 44 | HWThread 45 | HWThread 46 | HWThread 47 | HWThread 48 | HWThread 49 | HWThread 50 | HWThread 51 | HWThread 52 | HWThread 53 | HWThread 54 | HWThread 55 | HWThread 56 | HWThread 57 | HWThread 58 | HWThread 59 | HWThread 60 | HWThread 61 | HWThread 62 | HWThread 63 |
++------------------------+---------+------------+------------+------------+------------+------------+------------+------------+------------+------------+------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+
+|    ACTUAL_CPU_CLOCK    |  FIXC1  |          0 |          0 |          0 |          0 |          0 |          0 |          0 |          0 |          0 |          0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |
+|      MAX_CPU_CLOCK     |  FIXC2  |          0 |          0 |          0 |          0 |          0 |          0 |          0 |          0 |          0 |          0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |
+|  RETIRED_INSTRUCTIONS  |   PMC0  | 1391860328 | 1350389704 | 1352145875 | 1348579332 | 1326624815 | 1347776122 | 1347845271 | 1340760132 | 1322611818 | 1346690055 |  1346600433 |  1336047114 |  1315518893 |  1346680597 |  1346861176 |  1335801749 |  1311513604 |  1342944242 |  1343026905 |  1326876072 |  1311309149 |  1343308277 |  1343831181 |  1327349335 |  1312460068 |  1338855234 |  1336663371 |  1333961420 |  1317399094 |  1343992274 |  1343975132 |  1332554588 |  1207419612 |  1243631843 |  1243759278 |  1223487838 |  1206772733 |  1240535031 |  1235171803 |  1222338185 |  1204506707 |  1239909362 |  1239914640 |  1221574495 |  1204596523 |  1240482589 |  1240292581 |  1222055341 |  1216946226 |  1249443170 |  1237575306 |  1219094944 |  1205517985 |  1247525690 |  1250333170 |  1234641437 |  1213519037 |  1247037381 |  1247389676 |  1231832051 |  1212368675 |  1245483149 |  1245422821 |  1240430373 |
+|   CPU_CLOCKS_UNHALTED  |   PMC1  | 1388372000 | 1417158622 | 1416624678 | 1414359170 | 1416569522 | 1416534678 | 1416854102 | 1416938245 | 1416685907 | 1416400515 |  1416508905 |  1416215126 |  1416240392 |  1416107271 |  1416086435 |  1415617330 |  1416154056 |  1416514090 |  1416476595 |  1416335219 |  1416723745 |  1416816611 |  1416920156 |  1416951276 |  1415899948 |  1415742858 |  1415715238 |  1415799487 |  1416945381 |  1416689463 |  1416745962 |  1416700489 |  1416981599 |  1416949149 |  1416966180 |  1416656666 |  1416840203 |  1416206904 |  1415455192 |  1414594179 |  1412797739 |  1413305123 |  1412529072 |  1411404700 |  1411038802 |  1410409955 |  1409555974 |  1408878333 |  1408065899 |  1407252743 |  1406519255 |  1403946450 |  1403271213 |  1404173058 |  1403461795 |  1402787352 |  1401204630 |  1401750211 |  1402019311 |  1400167754 |  1396944214 |  1397855932 |  1396941651 |  1394963714 |
+|   DATA_CACHE_ACCESSES  |   PMC2  |  604228827 |  530256710 |  531150347 |  529558196 |  527192493 |  530534256 |  530224344 |  529421507 |  526379285 |  530751283 |   529441263 |   528688033 |   525508080 |   529347914 |   529336523 |   527897908 |   524407668 |   528812714 |   529415657 |   526459673 |   524680071 |   529903131 |   529784654 |   527663157 |   525620601 |   531681217 |   531036595 |   527943604 |   525105378 |   528944393 |   528882607 |   527476855 |   483581773 |   488727032 |   488766218 |   485848394 |   483670108 |   489244409 |   489601177 |   487017329 |   483219264 |   488263770 |   489121076 |   485511070 |   483121560 |   488260104 |   488200359 |   485624506 |   484976447 |   489481233 |   489177191 |   490225122 |   486723194 |   489968999 |   489761447 |   487327537 |   484449565 |   489224605 |   489920223 |   487271232 |   484255986 |   489182189 |   489011797 |   489125666 |
+| DATA_CACHE_REFILLS_ALL |   PMC3  |    6967513 |     666334 |     636456 |     526321 |     718750 |     640644 |     788363 |    1116993 |     616048 |     716668 |      628336 |      520024 |      725920 |      588111 |      552131 |      541551 |      685796 |      837354 |      559298 |      737506 |      609371 |      627059 |      586685 |      642757 |     4772862 |     5521539 |     5546785 |      602542 |      629941 |      604000 |      586906 |      582125 |      612957 |      557120 |      605651 |      567479 |      683790 |     2911614 |     1840837 |     3968100 |     2050473 |      554397 |      544173 |      488889 |      593138 |      562618 |      529020 |      476509 |      616220 |      569039 |     1653019 |     5976528 |     5915749 |     4754444 |      583330 |      489920 |      550462 |      584992 |      763533 |      500469 |      579623 |      631855 |      542430 |      520758 |
++------------------------+---------+------------+------------+------------+------------+------------+------------+------------+------------+------------+------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+
+
++-----------------------------+---------+-------------+------------+------------+--------------+
+|            Event            | Counter |     Sum     |     Min    |     Max    |      Avg     |
++-----------------------------+---------+-------------+------------+------------+--------------+
+|    ACTUAL_CPU_CLOCK STAT    |  FIXC1  |           0 |          0 |          0 |            0 |
+|      MAX_CPU_CLOCK STAT     |  FIXC2  |           0 |          0 |          0 |            0 |
+|  RETIRED_INSTRUCTIONS STAT  |   PMC0  | 82193823012 | 1204506707 | 1391860328 | 1.284278e+09 |
+|   CPU_CLOCKS_UNHALTED STAT  |   PMC1  | 90348298424 | 1388372000 | 1417158622 | 1.411692e+09 |
+|   DATA_CACHE_ACCESSES STAT  |   PMC2  | 32585595526 |  483121560 |  604228827 | 5.091499e+08 |
+| DATA_CACHE_REFILLS_ALL STAT |   PMC3  |    83861825 |     476509 |    6967513 | 1.310341e+06 |
++-----------------------------+---------+-------------+------------+------------+--------------+
+
++-------------------------+------------+------------+------------+------------+------------+------------+------------+------------+------------+------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+
+|          Metric         | HWThread 0 | HWThread 1 | HWThread 2 | HWThread 3 | HWThread 4 | HWThread 5 | HWThread 6 | HWThread 7 | HWThread 8 | HWThread 9 | HWThread 10 | HWThread 11 | HWThread 12 | HWThread 13 | HWThread 14 | HWThread 15 | HWThread 16 | HWThread 17 | HWThread 18 | HWThread 19 | HWThread 20 | HWThread 21 | HWThread 22 | HWThread 23 | HWThread 24 | HWThread 25 | HWThread 26 | HWThread 27 | HWThread 28 | HWThread 29 | HWThread 30 | HWThread 31 | HWThread 32 | HWThread 33 | HWThread 34 | HWThread 35 | HWThread 36 | HWThread 37 | HWThread 38 | HWThread 39 | HWThread 40 | HWThread 41 | HWThread 42 | HWThread 43 | HWThread 44 | HWThread 45 | HWThread 46 | HWThread 47 | HWThread 48 | HWThread 49 | HWThread 50 | HWThread 51 | HWThread 52 | HWThread 53 | HWThread 54 | HWThread 55 | HWThread 56 | HWThread 57 | HWThread 58 | HWThread 59 | HWThread 60 | HWThread 61 | HWThread 62 | HWThread 63 |
++-------------------------+------------+------------+------------+------------+------------+------------+------------+------------+------------+------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+
+|   Runtime (RDTSC) [s]   |     0.5128 |     0.5128 |     0.5128 |     0.5128 |     0.5128 |     0.5128 |     0.5128 |     0.5128 |     0.5128 |     0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |      0.5128 |
+|   Runtime unhalted [s]  |          0 |          0 |          0 |          0 |          0 |          0 |          0 |          0 |          0 |          0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |           0 |
+|       Clock [MHz]       |      -     |      -     |      -     |      -     |      -     |      -     |      -     |      -     |      -     |      -     |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |      -      |
+|           CPI           |     0.9975 |     1.0494 |     1.0477 |     1.0488 |     1.0678 |     1.0510 |     1.0512 |     1.0568 |     1.0711 |     1.0518 |      1.0519 |      1.0600 |      1.0766 |      1.0516 |      1.0514 |      1.0598 |      1.0798 |      1.0548 |      1.0547 |      1.0674 |      1.0804 |      1.0547 |      1.0544 |      1.0675 |      1.0788 |      1.0574 |      1.0591 |      1.0613 |      1.0756 |      1.0541 |      1.0541 |      1.0631 |      1.1736 |      1.1394 |      1.1393 |      1.1579 |      1.1741 |      1.1416 |      1.1460 |      1.1573 |      1.1729 |      1.1398 |      1.1392 |      1.1554 |      1.1714 |      1.1370 |      1.1365 |      1.1529 |      1.1570 |      1.1263 |      1.1365 |      1.1516 |      1.1640 |      1.1256 |      1.1225 |      1.1362 |      1.1547 |      1.1241 |      1.1240 |      1.1367 |      1.1522 |      1.1223 |      1.1217 |      1.1246 |
+|   data cache requests   |  604228827 |  530256710 |  531150347 |  529558196 |  527192493 |  530534256 |  530224344 |  529421507 |  526379285 |  530751283 |   529441263 |   528688033 |   525508080 |   529347914 |   529336523 |   527897908 |   524407668 |   528812714 |   529415657 |   526459673 |   524680071 |   529903131 |   529784654 |   527663157 |   525620601 |   531681217 |   531036595 |   527943604 |   525105378 |   528944393 |   528882607 |   527476855 |   483581773 |   488727032 |   488766218 |   485848394 |   483670108 |   489244409 |   489601177 |   487017329 |   483219264 |   488263770 |   489121076 |   485511070 |   483121560 |   488260104 |   488200359 |   485624506 |   484976447 |   489481233 |   489177191 |   490225122 |   486723194 |   489968999 |   489761447 |   487327537 |   484449565 |   489224605 |   489920223 |   487271232 |   484255986 |   489182189 |   489011797 |   489125666 |
+| data cache request rate |     0.4341 |     0.3927 |     0.3928 |     0.3927 |     0.3974 |     0.3936 |     0.3934 |     0.3949 |     0.3980 |     0.3941 |      0.3932 |      0.3957 |      0.3995 |      0.3931 |      0.3930 |      0.3952 |      0.3998 |      0.3938 |      0.3942 |      0.3968 |      0.4001 |      0.3945 |      0.3942 |      0.3975 |      0.4005 |      0.3971 |      0.3973 |      0.3958 |      0.3986 |      0.3936 |      0.3935 |      0.3958 |      0.4005 |      0.3930 |      0.3930 |      0.3971 |      0.4008 |      0.3944 |      0.3964 |      0.3984 |      0.4012 |      0.3938 |      0.3945 |      0.3974 |      0.4011 |      0.3936 |      0.3936 |      0.3974 |      0.3985 |      0.3918 |      0.3953 |      0.4021 |      0.4037 |      0.3928 |      0.3917 |      0.3947 |      0.3992 |      0.3923 |      0.3928 |      0.3956 |      0.3994 |      0.3928 |      0.3926 |      0.3943 |
+|    data cache misses    |    6967513 |     666334 |     636456 |     526321 |     718750 |     640644 |     788363 |    1116993 |     616048 |     716668 |      628336 |      520024 |      725920 |      588111 |      552131 |      541551 |      685796 |      837354 |      559298 |      737506 |      609371 |      627059 |      586685 |      642757 |     4772862 |     5521539 |     5546785 |      602542 |      629941 |      604000 |      586906 |      582125 |      612957 |      557120 |      605651 |      567479 |      683790 |     2911614 |     1840837 |     3968100 |     2050473 |      554397 |      544173 |      488889 |      593138 |      562618 |      529020 |      476509 |      616220 |      569039 |     1653019 |     5976528 |     5915749 |     4754444 |      583330 |      489920 |      550462 |      584992 |      763533 |      500469 |      579623 |      631855 |      542430 |      520758 |
+|   data cache miss rate  |     0.0050 |     0.0005 |     0.0005 |     0.0004 |     0.0005 |     0.0005 |     0.0006 |     0.0008 |     0.0005 |     0.0005 |      0.0005 |      0.0004 |      0.0006 |      0.0004 |      0.0004 |      0.0004 |      0.0005 |      0.0006 |      0.0004 |      0.0006 |      0.0005 |      0.0005 |      0.0004 |      0.0005 |      0.0036 |      0.0041 |      0.0041 |      0.0005 |      0.0005 |      0.0004 |      0.0004 |      0.0004 |      0.0005 |      0.0004 |      0.0005 |      0.0005 |      0.0006 |      0.0023 |      0.0015 |      0.0032 |      0.0017 |      0.0004 |      0.0004 |      0.0004 |      0.0005 |      0.0005 |      0.0004 |      0.0004 |      0.0005 |      0.0005 |      0.0013 |      0.0049 |      0.0049 |      0.0038 |      0.0005 |      0.0004 |      0.0005 |      0.0005 |      0.0006 |      0.0004 |      0.0005 |      0.0005 |      0.0004 |      0.0004 |
+|  data cache miss ratio  |     0.0115 |     0.0013 |     0.0012 |     0.0010 |     0.0014 |     0.0012 |     0.0015 |     0.0021 |     0.0012 |     0.0014 |      0.0012 |      0.0010 |      0.0014 |      0.0011 |      0.0010 |      0.0010 |      0.0013 |      0.0016 |      0.0011 |      0.0014 |      0.0012 |      0.0012 |      0.0011 |      0.0012 |      0.0091 |      0.0104 |      0.0104 |      0.0011 |      0.0012 |      0.0011 |      0.0011 |      0.0011 |      0.0013 |      0.0011 |      0.0012 |      0.0012 |      0.0014 |      0.0060 |      0.0038 |      0.0081 |      0.0042 |      0.0011 |      0.0011 |      0.0010 |      0.0012 |      0.0012 |      0.0011 |      0.0010 |      0.0013 |      0.0012 |      0.0034 |      0.0122 |      0.0122 |      0.0097 |      0.0012 |      0.0010 |      0.0011 |      0.0012 |      0.0016 |      0.0010 |      0.0012 |      0.0013 |      0.0011 |      0.0011 |
++-------------------------+------------+------------+------------+------------+------------+------------+------------+------------+------------+------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+
+
++------------------------------+-------------+-----------+-----------+--------------+
+|            Metric            |     Sum     |    Min    |    Max    |      Avg     |
++------------------------------+-------------+-----------+-----------+--------------+
+|   Runtime (RDTSC) [s] STAT   |     32.8192 |    0.5128 |    0.5128 |       0.5128 |
+|   Runtime unhalted [s] STAT  |           0 |         0 |         0 |            0 |
+|       Clock [MHz] STAT       |           0 |    inf    |         0 |            0 |
+|           CPI STAT           |     70.4759 |    0.9975 |    1.1741 |       1.1012 |
+|   data cache requests STAT   | 32585595526 | 483121560 | 604228827 | 5.091499e+08 |
+| data cache request rate STAT |     25.3723 |    0.3917 |    0.4341 |       0.3964 |
+|    data cache misses STAT    |    83861825 |    476509 |   6967513 | 1.310341e+06 |
+|   data cache miss rate STAT  |      0.0653 |    0.0004 |    0.0050 |       0.0010 |
+|  data cache miss ratio STAT  |      0.1639 |    0.0010 |    0.0122 |       0.0026 |
++------------------------------+-------------+-----------+-----------+--------------+
+
