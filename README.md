@@ -1,6 +1,5 @@
 # TODO
 
-- [ ] codice per GPU
 - [ ] fare grafico per arithmetic analysis con dati aggiornata
 - [ ] grafici tempi -> fare su excel
     - [ ] strong scaling
@@ -23,6 +22,7 @@
 - [ ] Scalasca per spiegare risultati del weak e strong scaling
 - [ ] fare video su paraview della batimetria nuova
 - [ ] fare differenti tipologie sulle coordinate
+- [ ] codice per GPU
 
 
 # UPDATEs
