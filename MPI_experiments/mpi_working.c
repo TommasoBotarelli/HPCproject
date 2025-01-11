@@ -554,11 +554,6 @@ int main(int argc, char **argv)
   MPI_Cart_shift(cart_comm, 1, 1, 
                   &neighbors[LEFT], &neighbors[RIGHT]);
 
-  //printf("Rank = %4d - Coords = (%3d, %3d)"
-  //       " - Neighbors (up, down, left, right) = (%3d, %3d, %3d, %3d)\n",
-  //          rank, coords[0], coords[1], 
-  //          neighbors[UP], neighbors[DOWN], neighbors[LEFT], neighbors[RIGHT]);
-
   double start = GET_TIME();
 
   for(int n = 0; n < nt; n++) {
@@ -645,11 +640,7 @@ int main(int argc, char **argv)
         double eta_ij = GET(&eta, i, j) 
                 - param.dt / param.dx * (h_x_u_i1_j * GET(&u, i+1, j) - h_x_u_i_j * GET(&u, i, j))
                 - param.dt / param.dy * (h_x_v_i_j1 * GET(&v, i, j+1) - h_x_v_i_j * GET(&v, i, j));
-        
-        if (isnan(eta_ij)){
-          printf("i: %d, j: %d, value: %f", i, j, eta_ij);
-          return 1;
-        }
+
         
         SET(&eta, i, j, eta_ij);
       }

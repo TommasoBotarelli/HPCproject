@@ -382,8 +382,8 @@ int main(int argc, char **argv)
     init_data(&v, nx, ny + 1, param.dx, param.dy, 0.);
 
     init_data(&h_interp_u, u.nx, u.ny, param.dx, param.dy, 0.);
-    for(int j = 0; j < u.ny ; j++) {
-      for(int i = 0; i < u.nx + 1; i++) {
+    for(int j = 0; j < u.ny ; ++j) {
+      for(int i = 0; i < u.nx; ++i) {
         double x = i * param.dx;
         double y = ((double)j + 0.5) * param.dy;
         double val = interpolate_data(&h, x, y);
@@ -393,8 +393,8 @@ int main(int argc, char **argv)
     }
 
     init_data(&h_interp_v, v.nx, v.ny, param.dx, param.dy, 0.);
-    for(int j = 0; j < v.ny ; j++) {
-      for(int i = 0; i < v.nx + 1; i++) {
+    for(int j = 0; j < v.ny; ++j) {
+      for(int i = 0; i < v.nx; ++i) {
         double x = ((double)i + 0.5) * param.dx;
         double y = j * param.dy;
         double val = interpolate_data(&h, x, y);
@@ -453,28 +453,17 @@ int main(int argc, char **argv)
       double dt_dy = param.dt / param.dy;
 
       // update eta
-      for(int j = 0; j < ny ; j++) {
-        for(int i = 0; i < nx; i++) {
-          // TODO: this does not evaluate h at the correct locations
+      for(int j = 0; j < ny ; ++j) {
+        for(int i = 0; i < nx; ++i) {
           double h_x_u_i1_j = GET(&h_interp_u, i+1, j);
           double h_x_u_i_j = GET(&h_interp_u, i, j);
 
           double h_x_v_i_j1 = GET(&h_interp_v, i, j+1);
           double h_x_v_i_j = GET(&h_interp_v, i, j);
 
-          if (h_x_u_i1_j != 20.0 || h_x_u_i_j != 20.0 || h_x_v_i_j1 != 20.0 || h_x_v_i_j != 20){
-            printf("i: %d, j: %d, value: %f | %f | %f | %f\n", i, j, h_x_u_i1_j, h_x_u_i_j, h_x_v_i_j1, h_x_v_i_j);
-            return 1;
-          }
-
           double eta_ij = GET(&eta, i, j) 
                   - dt_dx * (h_x_u_i1_j * GET(&u, i+1, j) - h_x_u_i_j * GET(&u, i, j))
                   - dt_dy * (h_x_v_i_j1 * GET(&v, i, j+1) - h_x_v_i_j * GET(&v, i, j));
-          
-          if (eta_ij > 10.0 || eta_ij < -10.0 || isnan(eta_ij)){
-            printf("i: %d, j: %d, value: %f", i, j, eta_ij);
-            return 1;
-          }
           
           SET(&eta, i, j, eta_ij);
         }
@@ -482,7 +471,7 @@ int main(int argc, char **argv)
 
       double c1_dx = param.dt * param.g / param.dx;
       double c1_dy = param.dt * param.g / param.dy;
-      double one_minus_c2 = 1. - param.dt * param.gamma;
+      double one_minus_c2 = 1.0 - param.dt * param.gamma;
       // update u and v
       for(int j = 0; j < ny; j++) {
         for(int i = 0; i < nx; i++) {

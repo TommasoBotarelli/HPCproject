@@ -363,7 +363,7 @@ int main(int argc, char **argv)
 
   #pragma omp parallel for  
   for(int j = 0; j < v.ny; ++j) {
-    for(int i = 0; i < v.nx ; ++i) {
+    for(int i = 0; i < v.nx; ++i) {
       double x = ((double)i + 0.5) * param.dx;
       double y = j * param.dy;
       double val = interpolate_data(&h, x, y);

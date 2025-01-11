@@ -565,7 +565,7 @@ int main(int argc, char **argv)
 
   init_data(&h_interp_u, mysize_i + 1, mysize_j, param.dx, param.dy, 0.);
   for(int j = start_j; j < end_j; j++) {
-    for(int i = start_i; i < end_i + 1; i++) {
+    for(int i = start_i; i < end_i; i++) {
       double x = i * param.dx;
       double y = ((double)j + 0.5) * param.dy;
       double val = interpolate_data(&h, x, y);
@@ -575,7 +575,7 @@ int main(int argc, char **argv)
   }
 
   init_data(&h_interp_v, mysize_i, mysize_j + 1, param.dx, param.dy, 0.);
-  for(int j = start_j; j < end_j + 1; j++) {
+  for(int j = start_j; j < end_j; j++) {
     for(int i = start_i; i < end_i; i++) {
       double x = ((double)i + 0.5) * param.dx;
       double y = j * param.dy;
@@ -596,11 +596,6 @@ int main(int argc, char **argv)
 
   MPI_Cart_shift(cart_comm, 1, 1, 
                   &neighbors[LEFT], &neighbors[RIGHT]);
-
-  //printf("Rank = %4d - Coords = (%3d, %3d)"
-  //       " - Neighbors (up, down, left, right) = (%3d, %3d, %3d, %3d)\n",
-  //          rank, coords[0], coords[1], 
-  //          neighbors[UP], neighbors[DOWN], neighbors[LEFT], neighbors[RIGHT]);
 
   double start = GET_TIME();
 
@@ -688,11 +683,7 @@ int main(int argc, char **argv)
         double eta_ij = GET(&eta, i, j) 
                 - param.dt / param.dx * (h_x_u_i1_j * GET(&u, i+1, j) - h_x_u_i_j * GET(&u, i, j))
                 - param.dt / param.dy * (h_x_v_i_j1 * GET(&v, i, j+1) - h_x_v_i_j * GET(&v, i, j));
-        
-        //if (isnan(eta_ij)){
-        //  printf("i: %d, j: %d, value: %f", i, j, eta_ij);
-        //  return 1;
-        //}
+
         
         SET(&eta, i, j, eta_ij);
       }
