@@ -1,30 +1,28 @@
 # TODO
 
-- [x] domande 1/2/3/4
-- [ ] domanda 10: codice per GPU
-- [x] fare grafico per arithmetic analysis
-- [x] implementazione di Openmp
-- [x] domanda 5: scalasca su differenti topologie e fare grafico per vedere ottimizzazione
-    - [x] strong scaling
-        - [x] hybrid
-        - [x] mpi
-        - [x] OpenMp -> OK
-    - [x] weak scaling
-        - [x] hybrid
-        - [x] mpi
-        - [x] OpenMp
-- [x] domanda 6: scalasca su collapse e non collapse
-    - [x] collapse -> stessi risultati di openMP
-    - [x] no collapse -> da ricompilare con ottimizzazione
-- [x] domanda 7
+- [ ] codice per GPU
+- [ ] fare grafico per arithmetic analysis con dati aggiornata
+- [ ] grafici tempi -> fare su excel
+    - [ ] strong scaling
+        - [ ] hybrid
+        - [ ] mpi
+        - [ ] OpenMp
+    - [ ] weak scaling
+        - [ ] hybrid
+        - [ ] mpi
+        - [ ] OpenMp
+- [ ] scalasca su differenti topologie
+    - [ ] strong scaling
+        - [ ] hybrid
+        - [ ] mpi
+        - [ ] OpenMp
+    - [ ] weak scaling
+        - [ ] hybrid
+        - [ ] mpi
+        - [ ] OpenMp
 - [ ] Scalasca per spiegare risultati del weak e strong scaling
-- [ ] ultima domanda batimetria
-    - [x] trovare dati
-    - [x] descrizione del dataset (nx, ny, dx, dy)
-    - [x] conversione nel formato che ci serve a noi
-    - [x] simulazione
-    - [x] aggiungere altri tipi di source
-    - [ ] scaricare risultati e fare video delle 3 source
+- [ ] fare video su paraview della batimetria nuova
+- [ ] fare differenti tipologie sulle coordinate
 
 
 # UPDATEs
@@ -137,3 +135,13 @@ Riassumendo abbiamo le seguenti caratteristiche per il dataset:
 ## 06/01
 
 Ho aggiustato l'eseguibile _pianosa.c_ per fare in modo che i contorni dell'isola fossero riflettenti. Ho runnato e tutto va bene ma nella soluzione ci sono alcuni valori abbastanza alti $\approx 300$ che sembrano strani. La simulazione sembra realistica.
+
+
+## Scalasca
+
+| name                | Isend                      | Irecv                      | Waitall                      |
+|---------------------|----------------------------|----------------------------|------------------------------|
+| mpi_strong_02       | $0.79%$                    | 
+| ny       | 150                        |
+| dx       | $85.22374 \approx 85$      |
+| dy       | $85.22374 \approx 85$      |
