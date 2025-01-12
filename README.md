@@ -1,25 +1,27 @@
 # TODO
 
-- [ ] fare grafico per arithmetic analysis con dati aggiornata
-- [ ] grafici tempi -> fare su excel
-    - [ ] strong scaling
-        - [ ] hybrid
-        - [ ] mpi
+- [x] fare grafico per arithmetic analysis con dati aggiornata
+- [x] grafici tempi -> fare su excel
+    - [x] strong scaling
+        - [x] hybrid
+        - [x] mpi
+        - [x] OpenMp
+    - [x] weak scaling
+        - [x] hybrid
+        - [x] mpi
+        - [x] OpenMp
+- [x] scalasca su differenti topologie
+    - [x] strong scaling
+        - [x] hybrid
+        - [x] mpi
         - [ ] OpenMp
-    - [ ] weak scaling
-        - [ ] hybrid
-        - [ ] mpi
-        - [ ] OpenMp
-- [ ] scalasca su differenti topologie
-    - [ ] strong scaling
-        - [ ] hybrid
-        - [ ] mpi
-        - [ ] OpenMp
-    - [ ] weak scaling
-        - [ ] hybrid
-        - [ ] mpi
-        - [ ] OpenMp
+    - [x] weak scaling
+        - [x] hybrid
+        - [x] mpi
+        - [x] OpenMp
 - [ ] Scalasca per spiegare risultati del weak e strong scaling
+    - [ ] MPI weak
+    - [ ] hybrid weak
 - [ ] fare video su paraview della batimetria nuova
 - [ ] fare differenti tipologie sulle coordinate
 - [ ] codice per GPU

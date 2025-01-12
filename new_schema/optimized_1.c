@@ -36,6 +36,12 @@ struct data {
 #define GET_Y_COORD(data, i) ((data)->dy * (i))
 
 #define ERROR_VALUE -1
+#define MAX_ITERATION 50
+
+struct time_records {
+  int counter;
+  double times[MAX_ITERATION];
+};
 
 int read_parameters(struct parameters *param, const char *filename)
 {
@@ -242,6 +248,27 @@ void free_data(struct data *data)
   free(data->values);
 }
 
+void print_to_file(const struct time_records *times, const char *filename){
+  FILE *file = fopen(filename, "w");
+
+  if (file == NULL){
+      printf("Error opening file!\n");
+      exit(1);
+  }
+
+  double total_time = 0.0;
+
+  for (int i = 0; i < times->counter; i++){
+    fprintf(file, "%f\n", times->times[i]);
+    total_time += times->times[i];
+  }
+
+  double mean_time = total_time/(double)times->counter;
+
+  fprintf(file, "Total time: %f\n", total_time);
+  fprintf(file, "Mean time for execution: %f\n", mean_time);
+}
+
 double interpolate_data(const struct data *data, double x, double y)
 {
   // TODO: this returns the nearest neighbor, should implement actual
@@ -309,6 +336,15 @@ void save_coordinate(struct data *data, const char *filename){
 
 int main(int argc, char **argv)
 {
+
+  struct time_records times;
+  times.counter = 0;
+
+  struct data eta, u, v;
+  // interpolate bathymetry
+  struct data h_interp_u;
+  struct data h_interp_v;
+    
   if(argc != 2) {
     printf("Usage: %s parameter_file\n", argv[0]);
     return 1;
@@ -334,21 +370,14 @@ int main(int argc, char **argv)
   int nt = floor(param.max_t / param.dt);
 
   printf(" - grid size: %g m x %g m (%d x %d = %d grid points)\n",
-         hx, hy, nx, ny, nx * ny);
+        hx, hy, nx, ny, nx * ny);
   printf(" - number of time steps: %d\n", nt);
 
-  struct data eta, u, v;
-  init_data(&eta, nx, ny, param.dx, param.dy, 0.);
+  init_data(&eta, nx, ny, param.dx, param.dx, 0.);
   init_data(&u, nx + 1, ny, param.dx, param.dy, 0.);
   init_data(&v, nx, ny + 1, param.dx, param.dy, 0.);
 
-  // interpolate bathymetry
-  struct data h_interp_u;
-  struct data h_interp_v;
-
   init_data(&h_interp_u, u.nx, u.ny, param.dx, param.dy, 0.);
-
-  #pragma omp parallel for collapse(2)
   for(int j = 0; j < u.ny ; ++j) {
     for(int i = 0; i < u.nx; ++i) {
       double x = i * param.dx;
@@ -360,10 +389,8 @@ int main(int argc, char **argv)
   }
 
   init_data(&h_interp_v, v.nx, v.ny, param.dx, param.dy, 0.);
-
-  #pragma omp parallel for collapse(2)
   for(int j = 0; j < v.ny; ++j) {
-    for(int i = 0; i < v.nx ; ++i) {
+    for(int i = 0; i < v.nx; ++i) {
       double x = ((double)i + 0.5) * param.dx;
       double y = j * param.dy;
       double val = interpolate_data(&h, x, y);
@@ -390,15 +417,12 @@ int main(int argc, char **argv)
       //write_data_vtk(&v, "y velocity", param.output_v_filename, n);
     }
 
-    
     // impose boundary conditions
-
     double t = n * param.dt;
     if(param.source_type == 1) {
+      // sinusoidal velocity on top boundary
       double A = 5;
       double f = 1. / 20.;
-      // sinusoidal velocity on top boundary
-
       for(int j = 0; j < ny; j++) {
         SET(&u, 0, j, 0.);
         SET(&u, nx, j, 0.);
@@ -421,44 +445,35 @@ int main(int argc, char **argv)
     }
 
     // update eta
-    #pragma omp parallel for collapse(2)
-    for(int j = 0; j < ny ; ++j) {
-      for(int i = 0; i < nx; ++i) {
-
+    for(int j = 0; j < ny ; j++) {
+      for(int i = 0; i < nx; i++) {
+        // TODO: this does not evaluate h at the correct locations
         double h_x_u_i1_j = GET(&h_interp_u, i+1, j);
         double h_x_u_i_j = GET(&h_interp_u, i, j);
 
         double h_x_v_i_j1 = GET(&h_interp_v, i, j+1);
         double h_x_v_i_j = GET(&h_interp_v, i, j);
 
-        //Fare la divisione fuori dai for
-
         double eta_ij = GET(&eta, i, j) 
                 - param.dt / param.dx * (h_x_u_i1_j * GET(&u, i+1, j) - h_x_u_i_j * GET(&u, i, j))
                 - param.dt / param.dy * (h_x_v_i_j1 * GET(&v, i, j+1) - h_x_v_i_j * GET(&v, i, j));
-        
         
         SET(&eta, i, j, eta_ij);
       }
     }
 
-    // Spostare fuori da for n
-
-    double c1_dx = param.dt * param.g / param.dx;
-    double c1_dy = param.dt * param.g / param.dy;
-    double one_minus_c2 = 1.0 - param.dt * param.gamma;
-
     // update u and v
-    #pragma omp parallel for collapse(2)
-    for(int j = 0; j < ny; ++j) {
-      for(int i = 0; i < nx; ++i) {
+    for(int j = 0; j < ny; j++) {
+      for(int i = 0; i < nx; i++) {
+        double c1 = param.dt * param.g;
+        double c2 = param.dt * param.gamma;
         double eta_ij = GET(&eta, i, j);
         double eta_imj = GET(&eta, (i == 0) ? 0 : i - 1, j);
         double eta_ijm = GET(&eta, i, (j == 0) ? 0 : j - 1);
-        double u_ij = one_minus_c2 * GET(&u, i, j)
-          -c1_dx * (eta_ij - eta_imj);
-        double v_ij = one_minus_c2 * GET(&v, i, j)
-          - c1_dy * (eta_ij - eta_ijm);
+        double u_ij = (1. - c2) * GET(&u, i, j)
+          - c1 / param.dx * (eta_ij - eta_imj);
+        double v_ij = (1. - c2) * GET(&v, i, j)
+          - c1 / param.dy * (eta_ij - eta_ijm);
         SET(&u, i, j, u_ij);
         SET(&v, i, j, v_ij);
       }
@@ -467,7 +482,7 @@ int main(int argc, char **argv)
   }
 
   //write_manifest_vtk("water elevation", param.output_eta_filename,
-  //                   param.dt, nt, param.sampling_rate);
+  //                  param.dt, nt, param.sampling_rate);
   //write_manifest_vtk("x velocity", param.output_u_filename,
   //                   param.dt, nt, param.sampling_rate);
   //write_manifest_vtk("y velocity", param.output_v_filename,
@@ -475,13 +490,14 @@ int main(int argc, char **argv)
 
   double time = GET_TIME() - start;
   printf("\nDone: %g seconds (%g MUpdates/s)\n", time,
-         1e-6 * (double)eta.nx * (double)eta.ny * (double)nt / time);
+        1e-6 * (double)eta.nx * (double)eta.ny * (double)nt / time);
 
   free_data(&h_interp_u);
   free_data(&h_interp_v);
   free_data(&eta);
   free_data(&u);
   free_data(&v);
+
 
   return 0;
 }

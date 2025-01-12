@@ -382,7 +382,7 @@ int main(int argc, char **argv)
   printf(" - number of time steps: %d\n", nt);
 
   struct data eta, u, v;
-  init_data(&eta, nx, ny, param.dx, param.dx, 0.);
+  init_data(&eta, nx, ny, param.dx, param.dy, 0.);
   init_data(&u, nx + 1, ny, param.dx, param.dy, 0.);
   init_data(&v, nx, ny + 1, param.dx, param.dy, 0.);
 
