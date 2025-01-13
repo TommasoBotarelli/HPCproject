@@ -561,7 +561,11 @@ int main(int argc, char **argv)
 
       double a_sin_value = A * sin(2 * M_PI * f * t);
 
-      SET(&eta, 0, 0, a_sin_value);
+      for (int j = 0; j < 10; j++){
+        for (int i = 0; i < 10; i++){
+          SET(&eta, i, j, a_sin_value);          
+        }
+      }
     }
     else if (param.source_type == 3){
       double A = 5;
@@ -569,8 +573,17 @@ int main(int argc, char **argv)
 
       double a_sin_value = A * sin(2 * M_PI * f * t);
 
-      SET(&eta, eta.nx-1, eta.ny-1, a_sin_value);
-      SET(&eta, 0, 0, -a_sin_value);
+      for (int j = 0; j < 10; j++){
+        for (int i = 0; i < 10; i++){
+          SET(&eta, i, j, -a_sin_value);          
+        }
+      }
+
+      for (int j = 0; j < 10; j++){
+        for (int i = 0; i < 10; i++){
+          SET(&eta, eta.nx-1-i, eta.ny-1-j, a_sin_value);          
+        }
+      }
     }
     else {
       // TODO: add other sources
