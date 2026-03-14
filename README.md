@@ -40,15 +40,48 @@ Multiple bottlenecks in the initial serial code were fixed:
 * **Strong Scaling Result**: Exhibited an initial superlinear speedup due to better local cache utilization. However, efficiency rapidly declines with more ranks due to growing inter-process communication overhead.
 * **Weak Scaling Result**: Efficiency diminishes starting from 2 ranks, primarily driven by cache performance. Spreading processes beyond 8 ranks across multiple NUMA cores caused bandwidth contention and unbalanced `waitAll()` waits, worsening execution time.
 
+<table style="width: 100%;">
+  <tr>
+    <td align="center" width="33%">
+      <img src="https://github.com/TommasoBotarelli/HPCproject/blob/master/results/images/mpi_strong_scaling.png" style="width: 100%;"/><br />
+    </td>
+    <td align="center" width="33%">
+      <img src="https://github.com/TommasoBotarelli/HPCproject/blob/master/results/images/mpi_weak_scaling.png" style="width: 100%;"/><br />
+    </td>
+    <td align="center" width="33%">
+      <img src="https://github.com/TommasoBotarelli/HPCproject/blob/master/results/images/mpi_weak_scaling_spread.png" style="width: 100%;"/><br />
+    </td>
+  </tr>
+</table>
+
 ### 2. OpenMP (Shared Memory)
 * Parallelized loops using threads accessing shared memory. We attempted to use the `collapse` clause to flatten nested loops, but this destroyed cache optimizations and yielded no performance benefit.
 * **Strong Scaling Result**: Like MPI, efficiency heavily correlates with cache performance.
 * **Weak Scaling Result**: Yielded **no speedup**. This aligns with the arithmetic intensity analysis: since the algorithm is strictly memory bandwidth-bound, adding more threads does not overcome the bandwidth limit.
 
+<table style="width: 80%;">
+  <tr>
+    <td align="center" width="50%">
+      <img src="https://github.com/TommasoBotarelli/HPCproject/blob/master/results/images/openmp_strong.png" style="width: 100%;"/><br />
+    </td>
+    <td align="center" width="50%">
+      <img src="https://github.com/TommasoBotarelli/HPCproject/blob/master/results/images/openmp_weak.png" style="width: 100%;"/><br />
+    </td>
+  </tr>
+</table>
+
 ### 3. Hybrid (MPI + OpenMP)
 * Merged the two approaches to maximize node performance on large clusters.
 * **Strong Scaling Result**: Superlinear speedup occurs up to 2–4 threads due to optimal cache utilization, dropping as resources increase further.
 * **Weak Scaling Result**: Increasing the number of threads successfully mitigates the steep efficiency drop that occurs when scaling up MPI ranks.
+
+<div align="center">
+  <img src="https://github.com/TommasoBotarelli/HPCproject/blob/master/results/images/hybrid_strong_scaling_1.png" width="100%">
+</div>
+
+<div align="center">
+  <img src="https://github.com/TommasoBotarelli/HPCproject/blob/master/results/images/hybrid_scaling.png" width="100%">
+</div>
 
 ### 4. GPU Parallelization
 * Implemented GPU offloading via OpenMP.
