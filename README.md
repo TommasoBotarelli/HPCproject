@@ -1,149 +1,92 @@
-# TODO
+# High Performance Scientific Computing: Shallow Water Model Simulation
 
-- [x] fare grafico per arithmetic analysis con dati aggiornata
-- [x] grafici tempi -> fare su excel
-    - [x] strong scaling
-        - [x] hybrid
-        - [x] mpi
-        - [x] OpenMp
-    - [x] weak scaling
-        - [x] hybrid
-        - [x] mpi
-        - [x] OpenMp
-- [x] scalasca su differenti topologie
-    - [x] strong scaling
-        - [x] hybrid
-        - [x] mpi
-        - [ ] OpenMp
-    - [x] weak scaling
-        - [x] hybrid
-        - [x] mpi
-        - [x] OpenMp
-- [ ] Scalasca per spiegare risultati del weak e strong scaling
-    - [ ] MPI weak
-    - [ ] hybrid weak
-- [ ] fare video su paraview della batimetria nuova
-- [ ] fare differenti tipologie sulle coordinate
-- [ ] codice per GPU
+**Authors**: Tommaso Botarelli, Francesco Moglia
+**Institution**: LIÈGE université
 
+Presentation: [link](https://github.com/TommasoBotarelli/HPCproject/blob/master/Presentazione.pdf)
 
-# UPDATEs
+## 📌 Project Overview
+This project focuses on the numerical simulation of the **Shallow Water Model**. The model solves for free-surface elevation ($\eta$) and depth-averaged velocity ($u, v$) over a variable bottom topography ($h$) with a constant reference level. The primary goal is to optimize a baseline serial implementation and scale it using High-Performance Computing (HPC) techniques such as MPI, OpenMP, and GPU parallelization. 
 
-## 20/12
+## 🧮 Numerical Methods & Stability
+* **Bilinear Interpolation**: Implemented to replace the original nearest-neighbor algorithm, enhancing the accuracy of converting raw bathymetry data into computational datapoints.
+* **Stability Analysis**: Ensures reliable and physically meaningful results. We identified a linear relation between space ($dx$, $dy$) and time ($dt$) discretizations, determining the threshold where solutions become unstable (yielding NaN or unexpectedly large/small values).
 
-Riguardando i risultati che sono anche nella cartella results non mi tornava alcune cose:
-- Rispetto ai risultati sequenziali MPI con **un solo processo** (che nella pratica dovrebbe essere paragonabile al precedente) impiegava ben oltre i circa 20 secondi;
-- OpenMP aveva degli andamenti ancora peggiori e lo speedup era osceno;
+## 📈 Arithmetic Intensity & Serial Bottlenecks
 
-Ho quindi notato che:
-- MPI stampava molte cose a console e quindi ho ripulito la stampa;
-- Mentre per il sequenziale usavamo l'opzione _-O3_ in fase di compilazione (ottimizzazione di terzo livello) questo non veniva fatto negli altri eseguibili. 
+### Roofline Model & Memory Boundness
+* The code operates on 3 main data structures, requiring 27 Flops and achieving 17.28 MFlops/cycle. 
+* The calculated Arithmetic Intensity is **1.125 Flops/byte**.
+* Due to this low intensity, the algorithm is severely **memory bandwidth bound**. Even on high-end hardware like the AMD EPYC 7542 processor, the application scales linearly with memory bandwidth and cannot reach the processor's peak compute capabilities.
 
-Quindi ho ricompilato tutti i file e rilanciato tutti gli esempi. Ho anche modificato lo script bash per la generazione della tabella riprendendo anche l'effettivo tempo di esecuzione che abbiamo sempre preso per determinare la velocità del codice (ora la tabella è completa infatti).
+### Serial Optimizations & Results
+Multiple bottlenecks in the initial serial code were fixed:
+1. **Boundary Conditions**: Split useless nested cycles into independent cycles.
+2. **Data Locality**: Reordered nested loops for the $\eta$, $u$, and $v$ updates to improve spatial locality, which significantly increased data cache hits.
+3. **Loop Invariants**: Moved constant multipliers outside of the main computational loops to reduce the number of operations.
 
-I risultati sono riportati nei file _.out_ della cartella _results_. Ora però c'è una nuova cosa un pò strana... MPI con un singolo processo dovrebbe avere il tempo di esecuzione di un sequenziale ma sembrerebbe avere un tempo inferiore.
+**Optimization Results (Execution Time for dx=5, dy=5, dt=0.05, max_time=200):**
+* **Baseline (Unoptimized):** ~41.032s 
+* **Optimization 1 (Memory Access / Loop Reordering):** ~7.929s 
+* **Optimization 2 (+ Inner Loop Constants Precomputed):** ~7.865s 
+* **Optimization 3 (+ Outer Loop Constants Precomputed):** ~7.848s
 
-Non di molto ma sembra un pò strano che si guadagni quasi 3 secondi. C'é da considerare però che i tempi del sequenziale sono stati mediati su 50 esecuzioni e questa invece è una singola esecuzione. Inoltre è probabile che le impostazioni con la quale sono stati registrati i tempi del sequenziale non rispecchino le stesse impostazioni di esclusività del nodo con la quale sono stati runnati i test di strong scaling.
+*Note: Data collected via **Likwid** confirmed a massive reduction in data cache misses (thanks to memory access optimizations) and a linear reduction in data cache requests (thanks to optimized constant calculations).*
 
-Ricontrollando sembrerebbe che le impostazioni del job con la quale sono stati lanciati siano le stesse. Tuttavia mi sono accorto che effettivamente i sequenziali potrebbero avere qualche tipo di overhead per il fatto che si registrano i tempi. Anche se continua a sembrare un pò strano...
+## 🚀 Parallel Implementations & Scalability Results
 
-Ho girato senza esclusività MPI e sembra che con un solo nodo comunque faccia tempi molto migliori. Questo continua a non tornarmi molto...
+### 1. MPI (Distributed Memory)
+* The domain was divided into sub-domains and assigned to distinct processing elements using a **Cartesian Topology** with **Non-Blocking Communications**.
+* **Strong Scaling Result**: Exhibited an initial superlinear speedup due to better local cache utilization. However, efficiency rapidly declines with more ranks due to growing inter-process communication overhead.
+* **Weak Scaling Result**: Efficiency diminishes starting from 2 ranks, primarily driven by cache performance. Spreading processes beyond 8 ranks across multiple NUMA cores caused bandwidth contention and unbalanced `waitAll()` waits, worsening execution time.
 
-In ogni caso ho aggiunto i risultati con ottimizzazione dello strong scaling nella cartella results.
+### 2. OpenMP (Shared Memory)
+* Parallelized loops using threads accessing shared memory. We attempted to use the `collapse` clause to flatten nested loops, but this destroyed cache optimizations and yielded no performance benefit.
+* **Strong Scaling Result**: Like MPI, efficiency heavily correlates with cache performance.
+* **Weak Scaling Result**: Yielded **no speedup**. This aligns with the arithmetic intensity analysis: since the algorithm is strictly memory bandwidth-bound, adding more threads does not overcome the bandwidth limit.
 
-## 21/12
+### 3. Hybrid (MPI + OpenMP)
+* Merged the two approaches to maximize node performance on large clusters.
+* **Strong Scaling Result**: Superlinear speedup occurs up to 2–4 threads due to optimal cache utilization, dropping as resources increase further.
+* **Weak Scaling Result**: Increasing the number of threads successfully mitigates the steep efficiency drop that occurs when scaling up MPI ranks.
 
-Fatti i test per weak scaling. I risultati sembrano avere senso. Lo scaling è stato effettuato nel seguente modo:
+### 4. GPU Parallelization
+* Implemented GPU offloading via OpenMP.
+* The main bottleneck was device-to-host communication, which was resolved by employing **structured data regions** to persist data on the GPU.
+* **Result**: Achieved an overall **10x speedup**.
 
-| n ranks | dx    | dy    | total points             |
-|---------|-------|-------|--------------------------|
-| 1       | 5     | 5     | $800\cdot800=640000$     |
-| 2       | 2.5   | 5     | $1600\cdot800=1280000$   |
-| 4       | 2.5   | 2.5   | $1600\cdot1600=2560000$  |
-| 8       | 1.25  | 2.5   | $3200\cdot1600=5120000$  |
-| 16      | 1.25  | 1.25  | $3200\cdot3200=10240000$ |
-| 32      | 0.625 | 1.25  | $6400\cdot3200=20480000$ |
-| 64      | 0.625 | 0.625 | $6400\cdot6400=40960000$ |
+## 🌊 Real Bathymetry Data Testing
+To validate the model, complex bathymetry data of the **Tyrrhenian Sea (Pianosa Island)** was sourced from the EMODnet portal mapped to a 150x150 grid. The raw latitude/longitude coordinates were converted into strict meter discretization steps ($dx$, $dy$) using `opendem`. (Missing island values were handled as NaNs).
 
-Non è stato controllato che effettivamente i risultati siano stabili (dal momento che sono stati mantenuti lo stesso numero di punti nello spazio di sempre e questo potebbe comportare per _dx, dy_ piccoli instabilità).
+<div align="center">
+  <img src="https://github.com/TommasoBotarelli/HPCproject/blob/master/pianosa_simulation/pianosa.png" width="50%">
+</div>
 
-Per i risultati del tempo di computazione ho messo tutto nella cartella results.
+**Simulation Results:**
+The physical presence of the island correctly reflected the simulated waves. Testing configurations included:
+1. A sinusoidal wave originating from the left side.
+2. A sinusoidal wave originating from the upper-left corner.
+3. Two opposing sinusoidal waves originating simultaneously from the upper-left and lower-right corners.
 
-Ho fatto anche la weak e lo strong scaling per il caso di openmp senza il collapse. I risultati li devo ancora mettere.
+<table style="width: 100%;">
+  <tr>
+    <td align="center" width="33%">
+      <img src="https://github.com/TommasoBotarelli/HPCproject/blob/master/pianosa_simulation/video-1.gif" style="width: 100%;"/><br />
+      <sub><b>1</b></sub>
+    </td>
+    <td align="center" width="33%">
+      <img src="https://github.com/TommasoBotarelli/HPCproject/blob/master/pianosa_simulation/video-2.gif" style="width: 100%;"/><br />
+      <sub><b>2</b></sub>
+    </td>
+    <td align="center" width="33%">
+      <img src="https://github.com/TommasoBotarelli/HPCproject/blob/master/pianosa_simulation/video-3.gif" style="width: 100%;"/><br />
+      <sub><b>3</b></sub>
+    </td>
+  </tr>
+</table>
 
-## 03/01
-
-Ho aggiuto i risultati per lo scaling con no collapse.
-
-## 04/01
-
-I parametri del file di batimetria semplice che abbiamo sempre usato sono i seguenti:
-
-| name     | value |
-|----------|-------|
-| nx       | 100   |
-| ny       | 100   |
-| dx       | 40.0  |
-| dy       | 40.0  |
-
-Dopo averci pensato un pò penso che la meglio cosa sia prendere un dataset della batimetria delle terre non emerse e mettere come condizione di riflesso totale i contorni delle terre emerse. Per questo motivo ho usato il sito [emodnet.ec.europa.eu](https://emodnet.ec.europa.eu/geoviewer/#) che permette di recuperare i dati della batimetria. Continuerei ad usare un dataset con la stessa shape (non numericamente ma almeno che sia un quadrato) giusto per non avere problemi nella parallelizzazione. Si può usare un pò più di punti. 
-
-Ho recuperato quindi i dati di batimetria vicino all'isola di Pianosa. Ho ripulito il dataset e creato per il momento un file csv contenente i dati della batimetria. La shape dell'array è $150\cdot 150$.
-
-Tramite questo [calcolatore](https://opendem.info/arc2meters.html) si può calcolare i due parametri _dx_ e _dy_ prendendo una latitudine di riferimento per l'intero dataset (assumendo quindi una griglia regolare anche se nella realtà non lo è). 
-
-Per il momento ho fatto uno zip in cui ho messo i dati raw ottenuti dal sito e poi i miei dati processati nell'array $150\cdot 150$.
-
-## 05/01
-
-Ho calcolato alcuni parametri necessari per la descrizione del dataset della batimetria:
-
-- A partire dal dataset _raw_ ho estratto un quadrato di $150$ punti in entrambe le direzioni ($150\cdot 150 = 22500$ punti);
-- Le estremità del quadrato sono le seguenti:
-
-    | index         | latitude       | longitude |
-    |----------------|----------------|-----------|
-    | $[0, 0]$       | 42.6651        | 9.9724    |
-    | $[0, 149]$     | 42.6651        | 10.1286   |
-    | $[149, 0]$     | 42.5089        | 9.9724    |
-    | $[149, 149]$   | 42.5089        | 10.1286   |
-
-- A partire da queste coordinate in gradi si può effettuare la conversione per ottenere il valore di _dx_ e _dy_ in metri. Per prima cosa si calcola la differenza in gradi fra le coordinate di inizio e di fine per la longitude e la latitude. Da questo si calcola _dx_ e _dy_ (in gradi) prendendo la differenza e dividendola per _n_ numero di punti lungo l'asse corrispondente (nel nostro caso 150 per tutte e due le direzioni):
-
-    |                                    | latitude       | longitude |
-    |------------------------------------|----------------|-----------|
-    | absolute difference                | 0.1562         | 0.1563    |
-    | discretization step (in degree)    | 0.0010417      | 0.0010417 |
-
-    Si può assumere quindi che lo step sia lo stesso lungo entrambi gli assi e costante. Quindi si può calcolare la lunghezza dello step in metri usando il [calcolatore](https://opendem.info/arc2meters.html) considerando che $0.0010417° = 3.75012$ _seconds_ e che la latitude media (si assume che la griglia sia costante cosa che in realtà non sarebbe data la differenza di latitude ma che in questo caso è minima) è $42.587$. Otteniamo un valore di $85.22374$ _m_.
-
-    |                                    | latitude       | longitude |
-    |------------------------------------|----------------|-----------|
-    | absolute difference between max and min (in degree)                | $0.1562   $      | $0.1563   $ |
-    | discretization step (in degree)    | $0.0010417$      | $0.0010417$ |
-    | discretization step (in arc seconds)                        | $3.75012  $      | $3.75012  $ |
-    | discretization step based on average latitude (in meters)| $85.22\approx 85$ | $85.22\approx 85$ |
-
-Riassumendo abbiamo le seguenti caratteristiche per il dataset:
-
-| name     | value                      |
-|----------|----------------------------|
-| nx       | 150                        |
-| ny       | 150                        |
-| dx       | $85.22374 \approx 85$      |
-| dy       | $85.22374 \approx 85$      |
-
-
-## 06/01
-
-Ho aggiustato l'eseguibile _pianosa.c_ per fare in modo che i contorni dell'isola fossero riflettenti. Ho runnato e tutto va bene ma nella soluzione ci sono alcuni valori abbastanza alti $\approx 300$ che sembrano strani. La simulazione sembra realistica.
-
-
-## Scalasca
-
-| name                | Isend                      | Irecv                      | Waitall                      |
-|---------------------|----------------------------|----------------------------|------------------------------|
-| mpi_strong_02       | $0.79%$                    | 
-| ny       | 150                        |
-| dx       | $85.22374 \approx 85$      |
-| dy       | $85.22374 \approx 85$      |
+## 🔮 Future Developments
+* Experimenting with Dynamic Loop Scheduling in OpenMP to better balance thread workloads.
+* Further optimization to increase the GPU speedup.
+* Implementing dynamic boundaries on island coasts and transparent domain boundaries.
+* Transitioning to an implicit integration scheme to expose more potential parallelism.
